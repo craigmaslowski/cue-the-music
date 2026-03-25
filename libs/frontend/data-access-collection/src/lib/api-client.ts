@@ -1,5 +1,6 @@
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
+  import.meta.env.VITE_API_BASE_URL ??
+  `http://${window.location.hostname}:8000`;
 
 /** Shared fetch wrapper that points to the backend API. */
 export async function apiFetch<T>(
@@ -7,12 +8,15 @@ export async function apiFetch<T>(
   options?: RequestInit,
 ): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
+  const { headers: optionHeaders, ...rest } = options ?? {};
   const response = await fetch(url, {
+    ...rest,
     headers: {
       'Content-Type': 'application/json',
-      ...options?.headers,
+      ...(optionHeaders instanceof Headers
+        ? Object.fromEntries(optionHeaders.entries())
+        : optionHeaders),
     },
-    ...options,
   });
 
   if (!response.ok) {

@@ -75,15 +75,14 @@ def create_app() -> FastAPI:
         version="0.1.0",
     )
 
-    # CORS middleware for local development
+    # CORS middleware — allow all origins for local-network access.
+    # This app runs on a home Wi-Fi network with no credentials/cookies,
+    # so wildcard is safe and necessary for guests connecting by LAN IP.
     app.add_middleware(
         CORSMiddleware,
         allow_headers=["*"],
         allow_methods=["*"],
-        allow_origins=[
-            "http://localhost:4200",
-            "http://localhost:5173",
-        ],
+        allow_origins=["*"],
     )
 
     # Register custom exception handlers
