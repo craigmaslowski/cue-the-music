@@ -130,6 +130,26 @@ class AlbumRepository:
         return {"decades": decades, "genres": genres}
 
 
+    async def update_tracklist(
+        self, album_id: int, tracklist: list[dict[str, str]]
+    ) -> Album | None:
+        """Store a fetched tracklist on an existing album.
+
+        Args:
+            album_id: Primary key of the album to update.
+            tracklist: List of track dicts (position, title, duration).
+
+        Returns:
+            The updated Album, or None if not found.
+        """
+        album = await self._session.get(Album, album_id)
+        if album is None:
+            return None
+        album.tracklist = tracklist
+        await self._session.flush()
+        return album
+
+
 async def get_album_repository(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> AlbumRepository:
