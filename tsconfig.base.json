@@ -23,6 +23,11 @@
       "@cue-the-music/core-ui": ["./libs/frontend/core-ui/src/index.ts"],
       "@cue-the-music/data-access-collection": ["./libs/frontend/data-access-collection/src/index.ts"],
       "@cue-the-music/feature-crate": ["./libs/frontend/feature-crate/src/index.ts"],
+      "@cue-the-music/data-access-host": ["./libs/frontend/data-access-host/src/index.ts"],
+      "@cue-the-music/feature-host": ["./libs/frontend/feature-host/src/index.ts"],
+      "@cue-the-music/data-access-queue": ["./libs/frontend/data-access-queue/src/index.ts"],
+      "@cue-the-music/feature-queue": ["./libs/frontend/feature-queue/src/index.ts"],
+      "@cue-the-music/feature-sse": ["./libs/frontend/feature-sse/src/index.ts"],
       "@styled-system/*": ["./apps/frontend/styled-system/*"]
     }
   }

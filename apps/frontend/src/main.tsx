@@ -1,3 +1,4 @@
+import { SSEProvider } from '@cue-the-music/feature-sse';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
@@ -28,7 +29,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <SSEProvider>
+        <RouterProvider router={router} />
+      </SSEProvider>
     </QueryClientProvider>
   </StrictMode>,
 );

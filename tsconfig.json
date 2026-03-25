@@ -23,6 +23,21 @@
     },
     {
       "path": "./libs/frontend/feature-crate"
+    },
+    {
+      "path": "./libs/frontend/data-access-host"
+    },
+    {
+      "path": "./libs/frontend/feature-host"
+    },
+    {
+      "path": "./libs/frontend/data-access-queue"
+    },
+    {
+      "path": "./libs/frontend/feature-queue"
+    },
+    {
+      "path": "./libs/frontend/feature-sse"
     }
   ]
 }
