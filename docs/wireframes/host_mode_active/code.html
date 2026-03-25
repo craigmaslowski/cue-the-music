@@ -1,0 +1,460 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "error-dim": "#d53d18",
+              surface: "#0e0e0e",
+              "inverse-surface": "#fcf8f8",
+              tertiary: "#a1faff",
+              "on-error": "#450900",
+              "on-background": "#ffffff",
+              "primary-fixed-dim": "#beee00",
+              "secondary-dim": "#e30071",
+              "surface-bright": "#2c2c2c",
+              "surface-container-highest": "#262626",
+              "on-surface-variant": "#adaaaa",
+              "surface-container-low": "#131313",
+              secondary: "#ff6b9b",
+              "surface-variant": "#262626",
+              "tertiary-dim": "#00e5ee",
+              background: "#0e0e0e",
+              "surface-container-high": "#201f1f",
+              "on-primary": "#516700",
+              "on-surface": "#ffffff",
+              "inverse-on-surface": "#565554",
+              "on-primary-container": "#4a5e00",
+              "on-secondary-fixed": "#6c0032",
+              "tertiary-fixed": "#00f4fe",
+              "surface-container-lowest": "#000000",
+              "on-secondary-fixed-variant": "#a1004e",
+              "on-secondary": "#47001f",
+              "surface-dim": "#0e0e0e",
+              "on-error-container": "#ffd2c8",
+              "inverse-primary": "#516700",
+              "secondary-fixed": "#ffc1d0",
+              "surface-container": "#1a1919",
+              "on-primary-fixed": "#3a4a00",
+              "tertiary-container": "#00f4fe",
+              "on-tertiary": "#006165",
+              primary: "#f3ffca",
+              "secondary-fixed-dim": "#ffadc2",
+              "primary-fixed": "#cafd00",
+              "on-tertiary-fixed-variant": "#006266",
+              "secondary-container": "#ba005b",
+              "on-secondary-container": "#fff5f6",
+              outline: "#777575",
+              "on-primary-fixed-variant": "#526900",
+              error: "#ff7351",
+              "primary-dim": "#beee00",
+              "on-tertiary-container": "#00575b",
+              "tertiary-fixed-dim": "#00e5ee",
+              "surface-tint": "#f3ffca",
+              "outline-variant": "#494847",
+              "primary-container": "#cafd00",
+              "on-tertiary-fixed": "#004346",
+              "error-container": "#b92902",
+            },
+            fontFamily: {
+              headline: ["Space Grotesk"],
+              body: ["Manrope"],
+              label: ["Manrope"],
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .neon-glow-primary {
+        box-shadow: 0 0 15px rgba(243, 255, 202, 0.2);
+      }
+      .neon-glow-secondary {
+        box-shadow: 0 0 15px rgba(255, 107, 155, 0.2);
+      }
+      .glass-header {
+        backdrop-filter: blur(20px);
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body class="bg-background text-on-background font-body min-h-screen pb-32">
+    <!-- TopAppBar (Shared Component) -->
+    <header
+      class="fixed top-0 w-full z-50 bg-[#0e0e0e]/60 backdrop-blur-xl flex justify-between items-center px-6 py-4"
+    >
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-[#f3ffca]" data-icon="album"
+          >album</span
+        >
+        <h1
+          class="font-['Space_Grotesk'] font-bold tracking-tighter text-2xl text-[#f3ffca]"
+        >
+          Cue The Music
+        </h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <span
+          class="material-symbols-outlined text-[#f3ffca] hover:opacity-80 transition-opacity active:scale-95 duration-200 cursor-pointer"
+          data-icon="lock_open"
+          >lock_open</span
+        >
+      </div>
+    </header>
+    <main class="pt-24 px-6 max-w-5xl mx-auto space-y-8">
+      <!-- Host Controls Bar (New Section) -->
+      <section
+        class="bg-surface-container-high rounded-full px-6 py-3 flex items-center justify-between border border-outline-variant/15"
+      >
+        <div class="flex items-center gap-3">
+          <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+          <span
+            class="font-headline font-bold text-sm tracking-tight text-on-surface uppercase"
+            >Host Mode Active</span
+          >
+        </div>
+        <button
+          class="flex items-center gap-2 bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed px-5 py-2 rounded-full font-bold text-xs hover:opacity-90 active:scale-95 transition-all shadow-lg"
+        >
+          <span class="material-symbols-outlined text-sm" data-icon="sync"
+            >sync</span
+          >
+          Discogs Sync
+        </button>
+      </section>
+      <!-- Now Playing Section -->
+      <section class="relative group">
+        <div
+          class="absolute -inset-1 bg-gradient-to-r from-secondary to-tertiary opacity-10 blur-2xl group-hover:opacity-20 transition duration-1000"
+        ></div>
+        <div
+          class="relative bg-surface-container-highest rounded-xl overflow-hidden flex flex-col md:flex-row shadow-[0px_12px_24px_rgba(0,0,0,0.5)]"
+        >
+          <div class="w-full md:w-1/3 aspect-square relative">
+            <img
+              alt="Vibrant neon vinyl record spinning on a dark turntable"
+              class="w-full h-full object-cover"
+              data-alt="A close-up shot of a glowing neon green vinyl record spinning on a matte black turntable in a dark studio with pink highlights"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6FCfWl0G72oxffQbcJ2s-vi41Wu2lJhn5tsTACi3733Kmkh7f_-YVInHnimaOkQySxzOM5HLPkHpkvNsN8KNGx9TFaDc-jBpMmbmLmE4kALRgwpGwFu6orXzAykt-pmfUKhQ0e2eECowYLFV695r-ipDvRmk-gggBGfWSOi3VRx5dG2bNSfLaBqwTYJiAB1dT0wUtnOOKYE_pkdpvLzj2ALowoJsa43Eoo7ZTSd4ffMzpE32HuGn5lceXDUJjBwXi021eyfQUhhU"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
+            ></div>
+            <div class="absolute bottom-4 left-4">
+              <span
+                class="bg-secondary text-on-secondary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest"
+                >Now Playing</span
+              >
+            </div>
+          </div>
+          <div class="p-8 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <h2
+                  class="font-headline text-display-lg text-4xl font-bold tracking-tighter leading-none mb-1"
+                >
+                  Midnight City
+                </h2>
+                <button
+                  class="text-secondary hover:text-secondary-fixed transition-colors flex items-center gap-1 group/btn"
+                >
+                  <span
+                    class="material-symbols-outlined text-sm"
+                    data-icon="cancel"
+                    >cancel</span
+                  >
+                  <span
+                    class="font-label text-[10px] font-bold uppercase tracking-tighter opacity-0 group-hover/btn:opacity-100 transition-opacity"
+                    >Clear Now Playing</span
+                  >
+                </button>
+              </div>
+              <p class="text-on-surface-variant font-medium text-lg italic">
+                M83 — Hurry Up, We're Dreaming
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Queue Section -->
+      <section class="space-y-6">
+        <div
+          class="flex items-center justify-between border-b border-outline-variant/10 pb-4"
+        >
+          <h3
+            class="font-headline text-2xl font-bold tracking-tight text-primary"
+          >
+            Up Next
+          </h3>
+          <span
+            class="font-label text-xs text-on-surface-variant uppercase font-bold tracking-widest"
+            >3 Albums in Queue</span
+          >
+        </div>
+        <div class="space-y-3">
+          <!-- Queue Item 1 -->
+          <div
+            class="flex items-center gap-4 bg-surface-container-low p-4 rounded-xl group hover:bg-surface-container transition-colors relative"
+          >
+            <div
+              class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 relative"
+            >
+              <img
+                alt="Abstract colorful music wave background"
+                class="w-full h-full object-cover opacity-80"
+                data-alt="Abstract visualization of electronic music waves with neon cyan and purple light trails on a dark textured background"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlIEuYP3CK0B5WSA3IKi4cpUOqm17kmk8LRuPPi6p8LCf26XYLKJmDSdNbzIJ6NWVs2l1wTW7dIW4HOw9gZxsjo21ZSOHMipnvHyJnoVRCah7ZdDuqYaOjJirKhuxodQKASvW5ZBC8ZagNWPPhsuPoBw01Bg1uOgUSTIe5UMbSX3XzMEk0zb6ZGDbiEcSbLDzisjifpWFc-vNrn6byBzjClQm-2yl01vBw6pNlvwFiZdkd4to8MF_3WmqEzTGB1Jbqw7qihRUZmpg"
+              />
+              <div
+                class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <span
+                  class="material-symbols-outlined text-white text-sm"
+                  data-icon="drag_indicator"
+                  >drag_indicator</span
+                >
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-headline font-bold text-on-surface truncate">
+                Instant Crush
+              </h4>
+              <p class="font-body text-sm text-on-surface-variant truncate">
+                Daft Punk ft. Julian Casablancas
+              </p>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex flex-col items-center">
+                <span
+                  class="material-symbols-outlined text-primary text-xl"
+                  data-icon="keyboard_arrow_down"
+                  >keyboard_arrow_up</span
+                >
+                <span
+                  class="font-headline font-bold text-primary text-xs -mt-1 tracking-tighter"
+                  >4</span
+                >
+              </div>
+              <div class="flex flex-col items-center">
+                <span
+                  class="material-symbols-outlined text-primary text-xl"
+                  data-icon="keyboard_arrow_down"
+                  >keyboard_arrow_down</span
+                >
+                <span
+                  class="font-headline font-bold text-primary text-xs -mt-1 tracking-tighter"
+                  >0</span
+                >
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:text-secondary hover:border-secondary transition-all active:scale-90"
+                >
+                  <span
+                    class="material-symbols-outlined text-sm"
+                    data-icon="fast_forward"
+                    >fast_forward</span
+                  >
+                </button>
+                <button
+                  class="p-2 rounded-full bg-surface-container-highest text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90"
+                >
+                  <span
+                    class="material-symbols-outlined text-sm"
+                    data-icon="check_circle"
+                    >check_circle</span
+                  >
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Queue Item 2 -->
+          <div
+            class="flex items-center gap-4 bg-surface-container-low p-4 rounded-xl group hover:bg-surface-container transition-colors"
+          >
+            <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+              <img
+                alt="Stage lighting at a concert"
+                class="w-full h-full object-cover opacity-80"
+                data-alt="Deep blue and pink stage lights creating a hazy atmosphere over a silhouetted concert crowd with light beams piercing through"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyBFdTyfBC9Q9dt87oIFzm1x_c03JgGkC0-JwiQ8M4DlPJ-DI__EdTFxNZxGG_qUdX2mXGyAxkhQkZ0xsgFHQS3pPL7dAEVtXrnWtOzd6kwZyjSdCXgr3NRbwCTLd65cev43vbJzcJW4BH4UbYozwGZsfofqypnn9t6f3RtC6cT-IJSQYmNHx39ZuDsNg6QAwFUdt8wuowuBUP8B1jimAv06DYss-OpaF_QtHYRSSHRIQOGPqcBdkjKm34bVEgdUMT9JMeeTeLkxE"
+              />
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-headline font-bold text-on-surface truncate">
+                Nightcall
+              </h4>
+              <p class="font-body text-sm text-on-surface-variant truncate">
+                Kavinsky
+              </p>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex flex-col items-center">
+                <span
+                  class="material-symbols-outlined text-primary text-xl"
+                  data-icon="keyboard_arrow_down"
+                  >keyboard_arrow_up</span
+                >
+                <span
+                  class="font-headline font-bold text-primary text-xs -mt-1 tracking-tighter"
+                  >4</span
+                >
+              </div>
+              <div class="flex flex-col items-center">
+                <span
+                  class="material-symbols-outlined text-primary text-xl"
+                  data-icon="keyboard_arrow_down"
+                  >keyboard_arrow_down</span
+                >
+                <span
+                  class="font-headline font-bold text-primary text-xs -mt-1 tracking-tighter"
+                  >0</span
+                >
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:text-secondary hover:border-secondary transition-all active:scale-90"
+                >
+                  <span
+                    class="material-symbols-outlined text-sm"
+                    data-icon="fast_forward"
+                    >fast_forward</span
+                  >
+                </button>
+                <button
+                  class="p-2 rounded-full bg-surface-container-highest text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90"
+                >
+                  <span
+                    class="material-symbols-outlined text-sm"
+                    data-icon="check_circle"
+                    >check_circle</span
+                  >
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Queue Item 3 -->
+          <div
+            class="flex items-center gap-4 bg-surface-container-low p-4 rounded-xl group hover:bg-surface-container transition-colors"
+          >
+            <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+              <img
+                alt="Record store shelves"
+                class="w-full h-full object-cover opacity-80"
+                data-alt="Perspective view down a row of vinyl records in a dark independent record shop with neon lighting reflecting on the plastic sleeves"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIpwNl68wlu-Nhl7wXTpSik6oUJnN10q-bRqV5KyvFcdqZ4IREK6BLRH7ldRPq-aatypsUxOleYnnsYw6QxKDcpNR0P50jGSzddifEErz0AZrHKZH2bdrPik2VG25prE9PTKKvU0I_zkL8yd2hlvpupgkhK2idWyjUf6Us2ObRWWlkAK7xuVHSNwj_3NgF0ObaMr-MvINCh8V-mAYNNHaalnUQVxno9-yO8ArLGsUC95HhDf900ED6Su9MKzHpMDHfLK_0swdDdi8"
+              />
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-headline font-bold text-on-surface truncate">
+                Starboy
+              </h4>
+              <p class="font-body text-sm text-on-surface-variant truncate">
+                The Weeknd ft. Daft Punk
+              </p>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex flex-col items-center">
+                <span
+                  class="material-symbols-outlined text-primary text-xl"
+                  data-icon="keyboard_arrow_down"
+                  >keyboard_arrow_up</span
+                >
+                <span
+                  class="font-headline font-bold text-primary text-xs -mt-1 tracking-tighter"
+                  >4</span
+                >
+              </div>
+              <div class="flex flex-col items-center">
+                <span
+                  class="material-symbols-outlined text-primary text-xl"
+                  data-icon="keyboard_arrow_down"
+                  >keyboard_arrow_down</span
+                >
+                <span
+                  class="font-headline font-bold text-primary text-xs -mt-1 tracking-tighter"
+                  >0</span
+                >
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:text-secondary hover:border-secondary transition-all active:scale-90"
+                >
+                  <span
+                    class="material-symbols-outlined text-sm"
+                    data-icon="fast_forward"
+                    >fast_forward</span
+                  >
+                </button>
+                <button
+                  class="p-2 rounded-full bg-surface-container-highest text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90"
+                >
+                  <span
+                    class="material-symbols-outlined text-sm"
+                    data-icon="check_circle"
+                    >check_circle</span
+                  >
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- BottomNavBar (Shared Component) -->
+    <nav
+      class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-[#0e0e0e] rounded-t-[0.75rem] z-50 shadow-[0px_-12px_24px_rgba(0,0,0,0.5)]"
+    >
+      <a
+        class="flex flex-col items-center justify-center text-[#ffffff] p-3 hover:text-[#f3ffca] transition-colors active:scale-90 duration-200"
+        href="#"
+      >
+        <span class="material-symbols-outlined" data-icon="search">search</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center bg-[#cafd00] text-[#0e0e0e] rounded-full p-3 active:scale-90 transition-all duration-200"
+        href="#"
+      >
+        <span class="material-symbols-outlined" data-icon="format_list_bulleted"
+          >format_list_bulleted</span
+        >
+      </a>
+    </nav>
+  </body>
+</html>
