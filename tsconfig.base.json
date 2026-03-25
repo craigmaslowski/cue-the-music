@@ -16,6 +16,12 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@cue-the-music/source"]
+    "customConditions": ["@cue-the-music/source"],
+    "paths": {
+      "@cue-the-music/core-theme": ["./libs/frontend/core-theme/src/index.ts"],
+      "@cue-the-music/core-types": ["./libs/frontend/core-types/src/index.ts"],
+      "@cue-the-music/core-ui": ["./libs/frontend/core-ui/src/index.ts"],
+      "@styled-system/*": ["./apps/frontend/styled-system/*"]
+    }
   }
 }

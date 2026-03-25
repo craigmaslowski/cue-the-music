@@ -1,6 +1,8 @@
 /// <reference types='vitest' />
-import { defineConfig } from 'vite';
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
 
 export default defineConfig(() => ({
   root: import.meta.dirname,
@@ -13,11 +15,12 @@ export default defineConfig(() => ({
     port: 4200,
     host: 'localhost',
   },
-  plugins: [react()],
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [],
-  // },
+  plugins: [TanStackRouterVite({ routesDirectory: './src/routes' }), react()],
+  resolve: {
+    alias: {
+      '@styled-system': resolve(import.meta.dirname, 'styled-system'),
+    },
+  },
   build: {
     outDir: './dist',
     emptyOutDir: true,

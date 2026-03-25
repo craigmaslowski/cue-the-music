@@ -8,6 +8,15 @@
     },
     {
       "path": "./apps/frontend"
+    },
+    {
+      "path": "./libs/frontend/core-types"
+    },
+    {
+      "path": "./libs/frontend/core-ui"
+    },
+    {
+      "path": "./libs/frontend/core-theme"
     }
   ]
 }

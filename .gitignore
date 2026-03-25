@@ -8,6 +8,7 @@ build/
 *.egg-info/
 node-compile-cache/
 styled-system/
+routeTree.gen.ts
 
 # NX
 .nx/
