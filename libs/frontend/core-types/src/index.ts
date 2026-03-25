@@ -1,1 +1,7 @@
-export type { IAlbum, ITrack } from './lib/album';
+export type {
+  IAlbum,
+  IAlbumFilterValues,
+  IAlbumFilters,
+  IAlbumListResponse,
+  ITrack,
+} from './lib/album';

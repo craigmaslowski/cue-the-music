@@ -21,6 +21,8 @@
       "@cue-the-music/core-theme": ["./libs/frontend/core-theme/src/index.ts"],
       "@cue-the-music/core-types": ["./libs/frontend/core-types/src/index.ts"],
       "@cue-the-music/core-ui": ["./libs/frontend/core-ui/src/index.ts"],
+      "@cue-the-music/data-access-collection": ["./libs/frontend/data-access-collection/src/index.ts"],
+      "@cue-the-music/feature-crate": ["./libs/frontend/feature-crate/src/index.ts"],
       "@styled-system/*": ["./apps/frontend/styled-system/*"]
     }
   }

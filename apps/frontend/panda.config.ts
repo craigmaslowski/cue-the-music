@@ -112,6 +112,10 @@ export default defineConfig({
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(0.98)' },
         },
+        pulse: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.4' },
+        },
       },
     },
   },

@@ -21,3 +21,22 @@ export interface ITrack {
   position: string;
   title: string;
 }
+
+/** Filters applied when fetching the album collection. */
+export interface IAlbumFilters {
+  decades?: string[];
+  genres?: string[];
+  search?: string;
+}
+
+/** Available filter values returned by the album-filters endpoint. */
+export interface IAlbumFilterValues {
+  decades: string[];
+  genres: string[];
+}
+
+/** Paginated album list response from the API. */
+export interface IAlbumListResponse {
+  albums: IAlbum[];
+  total: number;
+}

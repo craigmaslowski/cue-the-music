@@ -20,6 +20,7 @@ export default defineConfig(() => ({
     alias: {
       '@styled-system': resolve(import.meta.dirname, 'styled-system'),
     },
+    conditions: ['@cue-the-music/source'],
   },
   build: {
     outDir: './dist',

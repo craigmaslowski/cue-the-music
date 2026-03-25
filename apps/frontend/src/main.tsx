@@ -9,7 +9,10 @@ import { routeTree } from './routeTree.gen';
 const queryClient = new QueryClient();
 
 // Create the TanStack Router instance with the generated route tree
-const router = createRouter({ routeTree });
+const router = createRouter({
+  routeTree,
+  context: { queryClient },
+});
 
 // Register the router type for type-safe route references
 declare module '@tanstack/react-router' {

@@ -17,6 +17,12 @@
     },
     {
       "path": "./libs/frontend/core-theme"
+    },
+    {
+      "path": "./libs/frontend/data-access-collection"
+    },
+    {
+      "path": "./libs/frontend/feature-crate"
     }
   ]
 }

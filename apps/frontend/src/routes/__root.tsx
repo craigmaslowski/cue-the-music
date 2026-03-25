@@ -1,9 +1,17 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router';
+import type { QueryClient } from '@tanstack/react-query';
+import {
+  Outlet,
+  createRootRouteWithContext,
+} from '@tanstack/react-router';
 
 import { AppShell } from '../app/AppShell/AppShell';
 
+interface IRouterContext {
+  queryClient: QueryClient;
+}
+
 /** Root route providing the app shell (header + bottom nav) to all child routes. */
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<IRouterContext>()({
   component: RootComponent,
   errorComponent: RootErrorComponent,
   pendingComponent: RootPendingComponent,
