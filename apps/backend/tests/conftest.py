@@ -8,8 +8,12 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from cue_the_music.dependencies.database import get_session
+from cue_the_music.events.broadcaster import MessageBroadcaster
 from cue_the_music.main import create_app
 from cue_the_music.models.base import Base
+
+# Default test PIN used by the Settings fixture
+TEST_HOST_PIN = "1234"
 
 
 @pytest_asyncio.fixture
@@ -40,8 +44,20 @@ async def async_session(async_engine):
 
 @pytest_asyncio.fixture
 async def client(async_engine):
-    """Provide an httpx AsyncClient wired to the FastAPI app with test DB."""
+    """Provide an httpx AsyncClient wired to the FastAPI app with test DB.
+
+    A MessageBroadcaster is attached to app.state for SSE-related tests.
+    Resets the HostAuthService singleton to avoid rate-limit state leaking.
+    """
+    import cue_the_music.services.host_auth_service as auth_module
+
+    # Reset the singleton so each test starts with fresh rate-limit state
+    auth_module._host_auth_service = None
+
     app = create_app()
+
+    # Attach a broadcaster so QueueService can broadcast in tests
+    app.state.broadcaster = MessageBroadcaster()
 
     # Override the get_session dependency to use the test database
     session_factory = async_sessionmaker(
@@ -58,3 +74,16 @@ async def client(async_engine):
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
+
+
+async def get_host_token(client: AsyncClient) -> str:
+    """Helper to verify the test PIN and return a host token.
+
+    Uses the default test PIN (1234). Requires HOST_PIN=1234 env var or
+    monkeypatch to be set in the test environment.
+    """
+    response = await client.post(
+        "/api/host/verify-pin", json={"pin": TEST_HOST_PIN}
+    )
+    assert response.status_code == 200
+    return response.json()["token"]

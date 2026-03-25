@@ -1,12 +1,15 @@
 """Service layer for queue, voting, and now-playing business logic.
 
 Services orchestrate calls to repositories and contain business rules.
-They never access the database session directly.
+They never access the database session directly. The broadcaster is
+optional to allow the service to work without SSE in tests.
 """
 
-from typing import Annotated
+from __future__ import annotations
 
-from fastapi import Depends
+from typing import TYPE_CHECKING, Annotated
+
+from fastapi import Depends, Request
 
 from cue_the_music.exceptions.exceptions import (
     AlbumNotFoundError,
@@ -37,6 +40,9 @@ from cue_the_music.schemas.queue_schemas import (
     VoteGetResponse,
 )
 
+if TYPE_CHECKING:
+    from cue_the_music.events.broadcaster import MessageBroadcaster
+
 GUEST_REQUEST_LIMIT = 3
 
 
@@ -45,15 +51,22 @@ class QueueService:
 
     def __init__(
         self,
+        album_repo: AlbumRepository,
+        broadcaster: MessageBroadcaster | None,
+        now_playing_repo: NowPlayingRepository,
         queue_repo: QueueRepository,
         vote_repo: VoteRepository,
-        now_playing_repo: NowPlayingRepository,
-        album_repo: AlbumRepository,
     ) -> None:
+        self._album_repo = album_repo
+        self._broadcaster = broadcaster
+        self._now_playing_repo = now_playing_repo
         self._queue_repo = queue_repo
         self._vote_repo = vote_repo
-        self._now_playing_repo = now_playing_repo
-        self._album_repo = album_repo
+
+    async def _broadcast(self, event_type: str, data: dict) -> None:  # type: ignore[type-arg]
+        """Broadcast an event if a broadcaster is available."""
+        if self._broadcaster is not None:
+            await self._broadcaster.broadcast(event_type, data)
 
     async def request_album(self, album_id: int, ip: str) -> QueueItemGetResponse:
         """Add an album to the queue.
@@ -74,7 +87,7 @@ class QueueService:
         # Insert (catches IntegrityError for duplicates inside the repo)
         item = await self._queue_repo.add_to_queue(album_id, ip)
 
-        return QueueItemGetResponse(
+        response = QueueItemGetResponse(
             id=item.id,
             album=AlbumSummary.model_validate(album),
             requested_by_ip=item.requested_by_ip,
@@ -82,11 +95,16 @@ class QueueService:
             created_at=item.created_at,
         )
 
+        await self._broadcast("queue_update", {"reason": "request_added"})
+        return response
+
     async def cancel_request(self, queue_item_id: int, ip: str) -> None:
         """Cancel a queue request. Only the requesting IP can cancel."""
         removed = await self._queue_repo.remove_from_queue(queue_item_id, ip=ip)
         if not removed:
             raise QueueItemNotFoundError(queue_item_id)
+
+        await self._broadcast("queue_update", {"reason": "request_cancelled"})
 
     async def get_queue_state(self, client_ip: str) -> QueueStateResponse:
         """Return the full queue state including now playing, queue items, and votes."""
@@ -136,12 +154,19 @@ class QueueService:
         if item is None:
             raise QueueItemNotFoundError(queue_item_id)
         await self._vote_repo.upsert_vote(queue_item_id, ip, value)
+        await self._broadcast(
+            "vote_update", {"queue_item_id": queue_item_id}
+        )
 
     async def remove_vote(self, queue_item_id: int, ip: str) -> None:
         """Remove a vote from a queue item."""
         removed = await self._vote_repo.remove_vote(queue_item_id, ip)
         if not removed:
             raise QueueItemNotFoundError(queue_item_id)
+
+        await self._broadcast(
+            "vote_update", {"queue_item_id": queue_item_id}
+        )
 
     async def promote_to_now_playing(self, queue_item_id: int) -> None:
         """Promote a queue item to now playing (atomic: delete + upsert).
@@ -161,24 +186,41 @@ class QueueService:
         # Upsert now playing
         await self._now_playing_repo.upsert(album_id)
 
+        await self._broadcast("queue_update", {"reason": "promoted"})
+
     async def skip_queue_item(self, queue_item_id: int) -> None:
         """Host removes any queue item regardless of ownership."""
         removed = await self._queue_repo.remove_from_queue(queue_item_id)
         if not removed:
             raise QueueItemNotFoundError(queue_item_id)
 
+        await self._broadcast("queue_update", {"reason": "skipped"})
+
     async def clear_now_playing(self) -> None:
         """Clear the now-playing slot."""
         await self._now_playing_repo.clear()
 
+        await self._broadcast("queue_update", {"reason": "now_playing_cleared"})
+
 
 async def get_queue_service(
-    queue_repo: Annotated[QueueRepository, Depends(get_queue_repository)],
-    vote_repo: Annotated[VoteRepository, Depends(get_vote_repository)],
+    album_repo: Annotated[AlbumRepository, Depends(get_album_repository)],
     now_playing_repo: Annotated[
         NowPlayingRepository, Depends(get_now_playing_repository)
     ],
-    album_repo: Annotated[AlbumRepository, Depends(get_album_repository)],
+    queue_repo: Annotated[QueueRepository, Depends(get_queue_repository)],
+    request: Request,
+    vote_repo: Annotated[VoteRepository, Depends(get_vote_repository)],
 ) -> QueueService:
-    """FastAPI dependency that provides a QueueService instance."""
-    return QueueService(queue_repo, vote_repo, now_playing_repo, album_repo)
+    """FastAPI dependency that provides a QueueService instance.
+
+    The broadcaster is retrieved from app.state if available (None in tests).
+    """
+    broadcaster = getattr(request.app.state, "broadcaster", None)
+    return QueueService(
+        album_repo=album_repo,
+        broadcaster=broadcaster,
+        now_playing_repo=now_playing_repo,
+        queue_repo=queue_repo,
+        vote_repo=vote_repo,
+    )

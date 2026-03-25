@@ -5,6 +5,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from cue_the_music.models.album import Album
+from tests.conftest import get_host_token
 
 
 async def _seed_album(async_engine, **overrides) -> dict:
@@ -193,8 +194,12 @@ class TestHostQueueEndpoints:
     """Tests for host queue management endpoints."""
 
     async def test_promote_to_now_playing(
-        self, client: AsyncClient, async_engine
+        self, client: AsyncClient, async_engine, monkeypatch
     ) -> None:
+        monkeypatch.setenv("HOST_PIN", "1234")
+        token = await get_host_token(client)
+        headers = {"X-Host-Token": token}
+
         album = await _seed_album(async_engine, discogs_release_id="e030")
         add_resp = await client.post(
             "/api/queue", json={"album_id": album["id"]}
@@ -202,7 +207,9 @@ class TestHostQueueEndpoints:
         qi_id = add_resp.json()["id"]
 
         response = await client.post(
-            "/api/host/now-playing", json={"queue_item_id": qi_id}
+            "/api/host/now-playing",
+            json={"queue_item_id": qi_id},
+            headers=headers,
         )
 
         assert response.status_code == 204
@@ -215,8 +222,12 @@ class TestHostQueueEndpoints:
         assert data["now_playing"]["album"]["id"] == album["id"]
 
     async def test_clear_now_playing(
-        self, client: AsyncClient, async_engine
+        self, client: AsyncClient, async_engine, monkeypatch
     ) -> None:
+        monkeypatch.setenv("HOST_PIN", "1234")
+        token = await get_host_token(client)
+        headers = {"X-Host-Token": token}
+
         album = await _seed_album(async_engine, discogs_release_id="e031")
         add_resp = await client.post(
             "/api/queue", json={"album_id": album["id"]}
@@ -224,10 +235,14 @@ class TestHostQueueEndpoints:
         qi_id = add_resp.json()["id"]
 
         await client.post(
-            "/api/host/now-playing", json={"queue_item_id": qi_id}
+            "/api/host/now-playing",
+            json={"queue_item_id": qi_id},
+            headers=headers,
         )
 
-        response = await client.delete("/api/host/now-playing")
+        response = await client.delete(
+            "/api/host/now-playing", headers=headers
+        )
 
         assert response.status_code == 204
 
@@ -235,15 +250,21 @@ class TestHostQueueEndpoints:
         assert state.json()["now_playing"] is None
 
     async def test_host_skip_queue_item(
-        self, client: AsyncClient, async_engine
+        self, client: AsyncClient, async_engine, monkeypatch
     ) -> None:
+        monkeypatch.setenv("HOST_PIN", "1234")
+        token = await get_host_token(client)
+        headers = {"X-Host-Token": token}
+
         album = await _seed_album(async_engine, discogs_release_id="e032")
         add_resp = await client.post(
             "/api/queue", json={"album_id": album["id"]}
         )
         qi_id = add_resp.json()["id"]
 
-        response = await client.delete(f"/api/host/queue/{qi_id}")
+        response = await client.delete(
+            f"/api/host/queue/{qi_id}", headers=headers
+        )
 
         assert response.status_code == 204
 
@@ -251,10 +272,31 @@ class TestHostQueueEndpoints:
         assert state.json()["count"] == 0
 
     async def test_promote_nonexistent_returns_404(
-        self, client: AsyncClient
+        self, client: AsyncClient, monkeypatch
     ) -> None:
+        monkeypatch.setenv("HOST_PIN", "1234")
+        token = await get_host_token(client)
+        headers = {"X-Host-Token": token}
+
         response = await client.post(
-            "/api/host/now-playing", json={"queue_item_id": 9999}
+            "/api/host/now-playing",
+            json={"queue_item_id": 9999},
+            headers=headers,
         )
 
         assert response.status_code == 404
+
+    async def test_host_endpoints_reject_without_token(
+        self, client: AsyncClient
+    ) -> None:
+        """Host endpoints require X-Host-Token header."""
+        response = await client.post(
+            "/api/host/now-playing", json={"queue_item_id": 1}
+        )
+        assert response.status_code == 403
+
+        response = await client.delete("/api/host/now-playing")
+        assert response.status_code == 403
+
+        response = await client.delete("/api/host/queue/1")
+        assert response.status_code == 403

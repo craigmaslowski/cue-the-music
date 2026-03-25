@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from cue_the_music.config import Settings, get_settings
 from cue_the_music.dependencies.database import get_session
+from cue_the_music.events.broadcaster import MessageBroadcaster
 from cue_the_music.integrations.discogs_client import (
     DiscogsArtist,
     DiscogsBasicInformation,
@@ -19,13 +20,15 @@ from cue_the_music.integrations.discogs_client import (
 )
 from cue_the_music.main import create_app
 
+_TEST_PIN = "1234"
+
 
 def _make_settings() -> Settings:
     """Create test settings."""
     return Settings(
         DISCOGS_TOKEN="test-token",
         DISCOGS_USERNAME="testuser",
-        HOST_PIN="1234",
+        HOST_PIN=_TEST_PIN,
     )
 
 
@@ -51,6 +54,13 @@ def _make_collection_response() -> DiscogsCollectionResponse:
     )
 
 
+async def _get_host_token(ac: AsyncClient) -> str:
+    """Verify the test PIN and return a host token."""
+    resp = await ac.post("/api/host/verify-pin", json={"pin": _TEST_PIN})
+    assert resp.status_code == 200
+    return resp.json()["token"]
+
+
 @pytest.mark.asyncio
 class TestSyncEndpoint:
     """Tests for POST /api/host/sync."""
@@ -58,6 +68,7 @@ class TestSyncEndpoint:
     async def test_sync_returns_result(self, async_engine) -> None:
         """A successful sync returns status and album count."""
         app = create_app()
+        app.state.broadcaster = MessageBroadcaster()
 
         session_factory = async_sessionmaker(
             async_engine, expire_on_commit=False
@@ -86,7 +97,11 @@ class TestSyncEndpoint:
             async with AsyncClient(
                 transport=transport, base_url="http://test"
             ) as ac:
-                response = await ac.post("/api/host/sync")
+                token = await _get_host_token(ac)
+                response = await ac.post(
+                    "/api/host/sync",
+                    headers={"X-Host-Token": token},
+                )
 
         assert response.status_code == 200
         data = response.json()
@@ -96,6 +111,7 @@ class TestSyncEndpoint:
     async def test_sync_failure_returns_502(self, async_engine) -> None:
         """A Discogs API failure returns 502."""
         app = create_app()
+        app.state.broadcaster = MessageBroadcaster()
 
         session_factory = async_sessionmaker(
             async_engine, expire_on_commit=False
@@ -123,8 +139,36 @@ class TestSyncEndpoint:
             async with AsyncClient(
                 transport=transport, base_url="http://test"
             ) as ac:
-                response = await ac.post("/api/host/sync")
+                token = await _get_host_token(ac)
+                response = await ac.post(
+                    "/api/host/sync",
+                    headers={"X-Host-Token": token},
+                )
 
         assert response.status_code == 502
         data = response.json()
         assert "sync" in data["detail"].lower() or "discogs" in data["detail"].lower()
+
+    async def test_sync_rejects_without_token(self, async_engine) -> None:
+        """POST /api/host/sync requires host authentication."""
+        app = create_app()
+        app.state.broadcaster = MessageBroadcaster()
+
+        session_factory = async_sessionmaker(
+            async_engine, expire_on_commit=False
+        )
+
+        async def override_get_session():
+            async with session_factory() as session, session.begin():
+                yield session
+
+        app.dependency_overrides[get_session] = override_get_session
+        app.dependency_overrides[get_settings] = lambda: _make_settings()
+
+        transport = ASGITransport(app=app)
+        async with AsyncClient(
+            transport=transport, base_url="http://test"
+        ) as ac:
+            response = await ac.post("/api/host/sync")
+
+        assert response.status_code == 403

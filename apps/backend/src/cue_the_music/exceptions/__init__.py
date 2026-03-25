@@ -12,6 +12,7 @@ from cue_the_music.exceptions.exceptions import (
     VoteNotFoundError,
 )
 from cue_the_music.exceptions.handlers import register_exception_handlers
+from cue_the_music.exceptions.rate_limit import PinRateLimitExceededError
 
 __all__ = [
     "AlbumAlreadyQueuedError",
@@ -19,6 +20,7 @@ __all__ = [
     "DiscogsRateLimitError",
     "DiscogsSyncError",
     "InvalidHostPinError",
+    "PinRateLimitExceededError",
     "QueueItemNotFoundError",
     "RequestLimitExceededError",
     "UnauthorizedHostActionError",

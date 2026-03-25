@@ -31,17 +31,22 @@ def _make_mock_album(album_id: int = 1) -> Album:
 
 
 def _make_service(
+    album_repo=None,
+    broadcaster=None,
+    now_playing_repo=None,
     queue_repo=None,
     vote_repo=None,
-    now_playing_repo=None,
-    album_repo=None,
 ) -> QueueService:
-    """Create a QueueService with optional mock repositories."""
+    """Create a QueueService with optional mock repositories.
+
+    Broadcaster defaults to None (broadcasting disabled for unit tests).
+    """
     return QueueService(
+        album_repo=album_repo or AsyncMock(),
+        broadcaster=broadcaster,
+        now_playing_repo=now_playing_repo or AsyncMock(),
         queue_repo=queue_repo or AsyncMock(),
         vote_repo=vote_repo or AsyncMock(),
-        now_playing_repo=now_playing_repo or AsyncMock(),
-        album_repo=album_repo or AsyncMock(),
     )
 
 

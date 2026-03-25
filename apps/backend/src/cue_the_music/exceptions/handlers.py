@@ -14,6 +14,7 @@ from cue_the_music.exceptions.exceptions import (
     UnauthorizedHostActionError,
     VoteNotFoundError,
 )
+from cue_the_music.exceptions.rate_limit import PinRateLimitExceededError
 
 # Map each exception to its HTTP status code
 _EXCEPTION_STATUS_MAP: dict[type[Exception], int] = {
@@ -22,6 +23,7 @@ _EXCEPTION_STATUS_MAP: dict[type[Exception], int] = {
     DiscogsRateLimitError: 429,
     DiscogsSyncError: 502,
     InvalidHostPinError: 401,
+    PinRateLimitExceededError: 429,
     QueueItemNotFoundError: 404,
     RequestLimitExceededError: 429,
     UnauthorizedHostActionError: 403,
