@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.eggs/
+*.egg-info/
+
+# NX
+.nx/cache/
+dist/
+tmp/
+
+# Build outputs
+build/
+out/
+.next/
+.nuxt/
+
+# Test coverage
+coverage/
+.coverage
+htmlcov/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Database
+*.sqlite
+*.db
+
+# Large data files
+*.csv
+*.parquet
+*.pkl

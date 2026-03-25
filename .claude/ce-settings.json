@@ -1,0 +1,17 @@
+{
+  "compoundEngineering": {
+    "learningsFile": ".claude/learnings.md",
+    "planFile": ".claude/plan.md",
+    "reviewAgents": {
+      "standards": true,
+      "security": true,
+      "performance": true,
+      "architecture": true
+    },
+    "swarmMode": {
+      "enabled": true,
+      "maxAgents": 4,
+      "worktreeBase": ".worktrees"
+    }
+  }
+}
