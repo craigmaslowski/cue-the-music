@@ -99,9 +99,9 @@ export function useAlbumDetailOverlay(
  * rendered (only when albumId is non-null and overlay is mounted).
  */
 export function useAlbumDetailData(albumId: number) {
-  const { data: album, isPlaceholderData } = useAlbum(albumId);
+  const { data: album } = useAlbum(albumId);
 
-  const isTracklistLoading = isPlaceholderData || album.tracklist === null;
+  const isTracklistLoading = album.tracklist === null;
 
   return { album, isTracklistLoading };
 }

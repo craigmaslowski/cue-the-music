@@ -60,4 +60,10 @@ Read and follow these standards documents. They are enforceable constraints, not
 
 ## Commands
 
-<!-- Common commands for this project -->
+- Frontend dev: `npx nx serve @cue-the-music/frontend`
+- Backend dev: `cd apps/backend && uv run uvicorn cue_the_music.main:app --reload`
+- Backend tests: `cd apps/backend && uv run pytest`
+- Frontend build: `npx nx build @cue-the-music/frontend`
+- Frontend typecheck: `npx nx typecheck @cue-the-music/frontend`
+- Frontend E2E: `npx nx e2e @cue-the-music/frontend-e2e`
+- All tests: `npx nx run-many -t test`

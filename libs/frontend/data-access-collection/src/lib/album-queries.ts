@@ -79,7 +79,7 @@ export function useAlbum(id: number) {
 
   return useSuspenseQuery({
     ...albumDetailQueryOptions(id),
-    placeholderData: () => {
+    initialData: () => {
       // Try to find this album in any cached list query
       const listQueries = queryClient.getQueriesData<IAlbumListResponse>({
         queryKey: albumKeys.lists(),

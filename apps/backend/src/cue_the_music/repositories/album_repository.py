@@ -93,7 +93,9 @@ class AlbumRepository:
 
     async def get_by_id(self, album_id: int) -> Album | None:
         """Retrieve a single album by its primary key."""
-        return await self._session.get(Album, album_id)
+        stmt = select(Album).where(Album.id == album_id)
+        result = await self._session.execute(stmt)
+        return result.scalar_one_or_none()
 
     async def get_filters(self) -> dict[str, list]:
         """Extract unique genres and decades from the collection.
@@ -147,6 +149,7 @@ class AlbumRepository:
             return None
         album.tracklist = tracklist
         await self._session.flush()
+        await self._session.refresh(album)
         return album
 
 

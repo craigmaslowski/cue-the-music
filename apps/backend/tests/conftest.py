@@ -11,6 +11,7 @@ from cue_the_music.dependencies.database import get_session
 from cue_the_music.events.broadcaster import MessageBroadcaster
 from cue_the_music.main import create_app
 from cue_the_music.models.base import Base
+from cue_the_music.services.album_service import _get_optional_discogs_client
 
 # Default test PIN used by the Settings fixture
 TEST_HOST_PIN = "1234"
@@ -70,6 +71,13 @@ async def client(async_engine):
             yield session
 
     app.dependency_overrides[get_session] = override_get_session
+
+    # Disable Discogs client in tests to prevent real HTTP calls
+    # and avoid lazy-load issues after tracklist caching
+    async def override_discogs_client():
+        return None
+
+    app.dependency_overrides[_get_optional_discogs_client] = override_discogs_client
 
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:

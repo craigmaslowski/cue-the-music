@@ -6,7 +6,7 @@ import {
 
 import { AppShell } from '../app/AppShell/AppShell';
 
-interface IRouterContext {
+export interface IRouterContext {
   queryClient: QueryClient;
 }
 
