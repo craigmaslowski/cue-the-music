@@ -31,5 +31,22 @@
     "vitest.config.ts",
     "vitest.config.mts"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    {
+      "path": "../../libs/frontend/data-access-collection/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/frontend/feature-sse/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/frontend/feature-queue/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/frontend/feature-crate/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/frontend/feature-host/tsconfig.lib.json"
+    }
+  ]
 }

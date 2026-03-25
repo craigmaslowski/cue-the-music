@@ -60,6 +60,10 @@
       }
     }
   ],
+  "sync": {
+    "applyChanges": false,
+    "disabledTaskSyncGenerators": ["@nx/js:typescript-sync"]
+  },
   "analytics": false,
   "targetDefaults": {
     "test": {

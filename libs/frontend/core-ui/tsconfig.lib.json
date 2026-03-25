@@ -39,9 +39,5 @@
     "src/**/*.spec.jsx"
   ],
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
-  "references": [
-    {
-      "path": "../../../apps/frontend/tsconfig.app.json"
-    }
-  ]
+  "references": []
 }

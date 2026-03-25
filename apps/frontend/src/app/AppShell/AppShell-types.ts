@@ -10,4 +10,12 @@ export interface IUseAppShellReturn {
   activeTab: string;
   /** Handler for tab navigation changes */
   handleTabChange: (details: { value: string }) => void;
+  /** Whether host mode is active */
+  isHostMode: boolean;
+  /** Whether the PIN overlay is open */
+  isPinOverlayOpen: boolean;
+  /** Handler for lock icon tap */
+  handleLockPress: () => void;
+  /** Handler for closing the PIN overlay */
+  handlePinOverlayClose: () => void;
 }

@@ -19,7 +19,7 @@ export const headerStyles = css({
   zIndex: 10,
 });
 
-/** Lock icon button placeholder for host mode */
+/** Lock icon button for host mode */
 export const lockIconStyles = css({
   backgroundColor: 'transparent',
   borderWidth: '0',
@@ -27,6 +27,13 @@ export const lockIconStyles = css({
   cursor: 'pointer',
   fontSize: 'bodyLg',
   padding: '2',
+  transition: 'color 0.2s ease',
+});
+
+/** Lock icon when host mode is active — highlighted */
+export const lockIconActiveStyles = css({
+  color: 'primary.container',
+  filter: 'drop-shadow(0 0 6px rgba(202, 253, 0, 0.4))',
 });
 
 /** App root container — full viewport, dark background */

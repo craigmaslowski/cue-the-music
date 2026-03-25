@@ -1,8 +1,10 @@
+import { HostPinOverlay } from '@cue-the-music/feature-host';
 import { Tabs } from '@ark-ui/react';
 
 import {
   contentStyles,
   headerStyles,
+  lockIconActiveStyles,
   lockIconStyles,
   rootStyles,
   tabListStyles,
@@ -19,7 +21,18 @@ import { useAppShell } from './useAppShell';
  */
 export function AppShell(props: IAppShellProps) {
   const { children } = props;
-  const { activeTab, handleTabChange } = useAppShell(props);
+  const {
+    activeTab,
+    handleTabChange,
+    isHostMode,
+    isPinOverlayOpen,
+    handleLockPress,
+    handlePinOverlayClose,
+  } = useAppShell(props);
+
+  const lockClass = isHostMode
+    ? `${lockIconStyles} ${lockIconActiveStyles}`
+    : lockIconStyles;
 
   return (
     <div className={rootStyles}>
@@ -27,11 +40,12 @@ export function AppShell(props: IAppShellProps) {
       <header className={headerStyles}>
         <h1 className={titleStyles}>Cue The Music</h1>
         <button
-          aria-label="Host mode"
-          className={lockIconStyles}
+          aria-label={isHostMode ? 'Deactivate host mode' : 'Activate host mode'}
+          className={lockClass}
+          onClick={handleLockPress}
           type="button"
         >
-          &#x1F512;
+          {isHostMode ? '\u{1F513}' : '\u{1F512}'}
         </button>
       </header>
 
@@ -54,6 +68,12 @@ export function AppShell(props: IAppShellProps) {
           </Tabs.Trigger>
         </Tabs.List>
       </Tabs.Root>
+
+      {/* Host PIN entry overlay */}
+      <HostPinOverlay
+        isOpen={isPinOverlayOpen}
+        onClose={handlePinOverlayClose}
+      />
     </div>
   );
 }
