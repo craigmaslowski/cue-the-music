@@ -16,8 +16,17 @@ from cue_the_music.config import Settings, get_settings
 
 logger = logging.getLogger(__name__)
 
-# Global rate limiter: 50 requests per 60 seconds (headroom under Discogs' 60/min)
-_rate_limiter = AsyncLimiter(max_rate=50, time_period=60)
+# Lazy rate limiter: created on first use within the running event loop
+# to avoid reuse across loops (which causes warnings in tests).
+_rate_limiter: AsyncLimiter | None = None
+
+
+def _get_rate_limiter() -> AsyncLimiter:
+    """Return the shared rate limiter, creating it on first use."""
+    global _rate_limiter  # noqa: PLW0603
+    if _rate_limiter is None:
+        _rate_limiter = AsyncLimiter(max_rate=50, time_period=60)
+    return _rate_limiter
 
 _USER_AGENT = "CueTheMusic/1.0"
 _BASE_URL = "https://api.discogs.com"
@@ -136,7 +145,7 @@ class DiscogsClient:
         Returns:
             Validated collection response with pagination and releases.
         """
-        async with _rate_limiter:
+        async with _get_rate_limiter():
             url = (
                 f"{_BASE_URL}/users/{username}"
                 f"/collection/folders/0/releases"
@@ -164,7 +173,7 @@ class DiscogsClient:
         Returns:
             Validated release detail with tracklist.
         """
-        async with _rate_limiter:
+        async with _get_rate_limiter():
             url = f"{_BASE_URL}/releases/{release_id}"
             async with httpx.AsyncClient() as client:
                 response = await client.get(

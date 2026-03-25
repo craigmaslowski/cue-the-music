@@ -1,5 +1,6 @@
 """Shared test fixtures for the Cue the Music backend."""
 
+import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
@@ -15,6 +16,16 @@ from cue_the_music.services.album_service import _get_optional_discogs_client
 
 # Default test PIN used by the Settings fixture
 TEST_HOST_PIN = "1234"
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limiter():
+    """Reset the Discogs rate limiter between tests to avoid cross-loop reuse."""
+    import cue_the_music.integrations.discogs_client as discogs_module
+
+    discogs_module._rate_limiter = None
+    yield
+    discogs_module._rate_limiter = None
 
 
 @pytest_asyncio.fixture

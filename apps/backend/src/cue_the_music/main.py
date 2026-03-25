@@ -40,11 +40,15 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     from cue_the_music.dependencies.database import engine
 
     # Startup: clear ephemeral queue state (queue resets on server restart)
-    async with engine.begin() as conn:
-        await conn.execute(text("DELETE FROM votes"))
-        await conn.execute(text("DELETE FROM queue_items"))
-        await conn.execute(text("DELETE FROM now_playing"))
-    logger.info("Cleared queue, votes, and now-playing on startup.")
+    # Tables may not exist yet if migrations haven't run — skip silently
+    try:
+        async with engine.begin() as conn:
+            await conn.execute(text("DELETE FROM votes"))
+            await conn.execute(text("DELETE FROM queue_items"))
+            await conn.execute(text("DELETE FROM now_playing"))
+        logger.info("Cleared queue, votes, and now-playing on startup.")
+    except Exception:
+        logger.warning("Could not clear ephemeral tables — run Alembic migrations first.")
 
     # Create the SSE broadcaster singleton and store on app.state
     broadcaster = MessageBroadcaster()
