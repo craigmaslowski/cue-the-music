@@ -5,6 +5,7 @@ node_modules/
 # Build output
 dist/
 build/
+out-tsc/
 *.egg-info/
 node-compile-cache/
 styled-system/
