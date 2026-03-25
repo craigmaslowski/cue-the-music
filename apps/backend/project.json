@@ -2,7 +2,7 @@
   "name": "backend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "apps/backend/cue_the_music",
+  "sourceRoot": "apps/backend/src/cue_the_music",
   "targets": {
     "lock": {
       "executor": "@nxlv/python:lock",
@@ -41,7 +41,7 @@
       "executor": "@nxlv/python:ruff-check",
       "outputs": [],
       "options": {
-        "lintFilePatterns": ["cue_the_music", "tests"]
+        "lintFilePatterns": ["src/cue_the_music", "tests"]
       },
       "cache": true
     },
@@ -49,7 +49,7 @@
       "executor": "@nxlv/python:ruff-format",
       "outputs": [],
       "options": {
-        "filePatterns": ["cue_the_music", "tests"]
+        "filePatterns": ["src/cue_the_music", "tests"]
       },
       "cache": true
     },
