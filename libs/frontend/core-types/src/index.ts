@@ -3,13 +3,14 @@ export type {
   IAlbumFilterValues,
   IAlbumFilters,
   IAlbumListResponse,
-  ITrack,
 } from './lib/album';
 export type {
+  IAlbumSummary,
   INowPlaying,
-  IQueueAlbum,
   IQueueItem,
-  IQueueResponse,
+  IQueueState,
   ISyncResponse,
   IVerifyPinResponse,
+  IVoteCastRequest,
+  IVoteGetResponse,
 } from './lib/queue';

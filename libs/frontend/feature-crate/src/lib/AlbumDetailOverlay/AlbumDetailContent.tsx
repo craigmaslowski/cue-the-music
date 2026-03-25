@@ -32,7 +32,7 @@ export function AlbumDetailContent(props: IAlbumDetailContentProps) {
     props;
   const { album, isTracklistLoading } = useAlbumDetailData(albumId);
 
-  const allTags = [...album.genre_tags, ...album.style_tags];
+  const allTags = [...(album.genre_tags ?? []), ...(album.style_tags ?? [])];
   const infoSegments: string[] = [];
   if (album.label) infoSegments.push(album.label);
   if (album.year) infoSegments.push(String(album.year));

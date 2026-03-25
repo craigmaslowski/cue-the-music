@@ -1,0 +1,1105 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Cue the Music",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/album-filters": {
+      "get": {
+        "tags": [
+          "albums"
+        ],
+        "summary": "Get Album Filters",
+        "description": "Return available genre and decade filter values for the collection.",
+        "operationId": "get_album_filters_api_album_filters_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlbumFilterGetResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/albums": {
+      "get": {
+        "tags": [
+          "albums"
+        ],
+        "summary": "List Albums",
+        "description": "List albums with optional search, genre, and decade filters.",
+        "operationId": "list_albums_api_albums_get",
+        "parameters": [
+          {
+            "name": "decade",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Decade"
+            }
+          },
+          {
+            "name": "genre",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Genre"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlbumListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/albums/{album_id}": {
+      "get": {
+        "tags": [
+          "albums"
+        ],
+        "summary": "Get Album",
+        "description": "Retrieve a single album by ID.",
+        "operationId": "get_album_api_albums__album_id__get",
+        "parameters": [
+          {
+            "name": "album_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Album Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlbumGetResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/host/verify-pin": {
+      "post": {
+        "tags": [
+          "host-auth"
+        ],
+        "summary": "Verify Pin",
+        "description": "Verify the host PIN and return a session token.\n\nRate limited to 5 attempts per IP per 60 seconds with a deliberate\n500ms delay on every attempt. Only one active host session at a time.",
+        "operationId": "verify_pin_api_host_verify_pin_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HostPinVerifyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostPinVerifyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/host/now-playing": {
+      "post": {
+        "tags": [
+          "host-queue"
+        ],
+        "summary": "Promote To Now Playing",
+        "description": "Promote a queue item to now playing (host action).",
+        "operationId": "promote_to_now_playing_api_host_now_playing_post",
+        "parameters": [
+          {
+            "name": "x-host-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Host-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueueItemPromoteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "host-queue"
+        ],
+        "summary": "Clear Now Playing",
+        "description": "Clear the currently playing album (host action).",
+        "operationId": "clear_now_playing_api_host_now_playing_delete",
+        "parameters": [
+          {
+            "name": "x-host-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Host-Token"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/host/queue/{queue_item_id}": {
+      "delete": {
+        "tags": [
+          "host-queue"
+        ],
+        "summary": "Skip Queue Item",
+        "description": "Remove any queue item regardless of ownership (host action).",
+        "operationId": "skip_queue_item_api_host_queue__queue_item_id__delete",
+        "parameters": [
+          {
+            "name": "queue_item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Queue Item Id"
+            }
+          },
+          {
+            "name": "x-host-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Host-Token"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queue": {
+      "get": {
+        "tags": [
+          "queue"
+        ],
+        "summary": "Get Queue",
+        "description": "Return the full queue state including now playing and vote info.",
+        "operationId": "get_queue_api_queue_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStateResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "queue"
+        ],
+        "summary": "Add To Queue",
+        "description": "Add an album to the queue.",
+        "operationId": "add_to_queue_api_queue_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueueItemCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueItemGetResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queue/{queue_item_id}": {
+      "delete": {
+        "tags": [
+          "queue"
+        ],
+        "summary": "Remove From Queue",
+        "description": "Cancel a queue request (only the requester can cancel).",
+        "operationId": "remove_from_queue_api_queue__queue_item_id__delete",
+        "parameters": [
+          {
+            "name": "queue_item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Queue Item Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Event Stream",
+        "description": "SSE endpoint for real-time event streaming.\n\nEach connected client gets a dedicated message queue. Events are\npushed by the broadcaster when queue/vote/sync state changes.\nConnection limits are enforced (50 global, 3 per IP).",
+        "operationId": "event_stream_api_events_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/host/sync": {
+      "post": {
+        "tags": [
+          "host"
+        ],
+        "summary": "Trigger Sync",
+        "description": "Trigger a full Discogs collection sync.\n\nFetches all pages of the host's collection and upserts albums.\nRequires host authentication. Broadcasts collection_sync event on success.",
+        "operationId": "trigger_sync_api_host_sync_post",
+        "parameters": [
+          {
+            "name": "x-host-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Host-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionSyncTriggerResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queue/{queue_item_id}/vote": {
+      "put": {
+        "tags": [
+          "votes"
+        ],
+        "summary": "Cast Vote",
+        "description": "Cast or update a vote on a queue item.",
+        "operationId": "cast_vote_api_queue__queue_item_id__vote_put",
+        "parameters": [
+          {
+            "name": "queue_item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Queue Item Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoteCastRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "votes"
+        ],
+        "summary": "Remove Vote",
+        "description": "Remove a vote from a queue item.",
+        "operationId": "remove_vote_api_queue__queue_item_id__vote_delete",
+        "parameters": [
+          {
+            "name": "queue_item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Queue Item Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AlbumFilterGetResponse": {
+        "properties": {
+          "decades": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Decades"
+          },
+          "genres": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Genres"
+          }
+        },
+        "type": "object",
+        "required": [
+          "decades",
+          "genres"
+        ],
+        "title": "AlbumFilterGetResponse",
+        "description": "Response schema for available filter values (genres and decades)."
+      },
+      "AlbumGetResponse": {
+        "properties": {
+          "artist": {
+            "type": "string",
+            "title": "Artist"
+          },
+          "cover_art_thumbnail_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cover Art Thumbnail Url"
+          },
+          "cover_art_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cover Art Url"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "discogs_release_id": {
+            "type": "string",
+            "title": "Discogs Release Id"
+          },
+          "genre_tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Genre Tags"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "style_tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Style Tags"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "tracklist": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tracklist"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          }
+        },
+        "type": "object",
+        "required": [
+          "artist",
+          "cover_art_thumbnail_url",
+          "cover_art_url",
+          "created_at",
+          "discogs_release_id",
+          "genre_tags",
+          "id",
+          "label",
+          "style_tags",
+          "title",
+          "tracklist",
+          "updated_at",
+          "year"
+        ],
+        "title": "AlbumGetResponse",
+        "description": "Response schema for a single album with all fields."
+      },
+      "AlbumListResponse": {
+        "properties": {
+          "albums": {
+            "items": {
+              "$ref": "#/components/schemas/AlbumGetResponse"
+            },
+            "type": "array",
+            "title": "Albums"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "albums",
+          "count"
+        ],
+        "title": "AlbumListResponse",
+        "description": "Response schema for a list of albums."
+      },
+      "AlbumSummary": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "artist": {
+            "type": "string",
+            "title": "Artist"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "cover_art_thumbnail_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cover Art Thumbnail Url"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "artist",
+          "title",
+          "cover_art_thumbnail_url",
+          "year"
+        ],
+        "title": "AlbumSummary",
+        "description": "Minimal album info embedded in queue responses."
+      },
+      "CollectionSyncTriggerResponse": {
+        "properties": {
+          "albums_synced": {
+            "type": "integer",
+            "title": "Albums Synced"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "albums_synced",
+          "status"
+        ],
+        "title": "CollectionSyncTriggerResponse",
+        "description": "Response schema for triggering a collection sync."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HostPinVerifyRequest": {
+        "properties": {
+          "pin": {
+            "type": "string",
+            "maxLength": 4,
+            "minLength": 4,
+            "pattern": "^\\d{4}$",
+            "title": "Pin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pin"
+        ],
+        "title": "HostPinVerifyRequest",
+        "description": "Request to verify a host PIN."
+      },
+      "HostPinVerifyResponse": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "title": "Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "title": "HostPinVerifyResponse",
+        "description": "Response containing the host session token."
+      },
+      "NowPlayingGetResponse": {
+        "properties": {
+          "album": {
+            "$ref": "#/components/schemas/AlbumSummary"
+          },
+          "promoted_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Promoted At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "album",
+          "promoted_at"
+        ],
+        "title": "NowPlayingGetResponse",
+        "description": "The currently playing album."
+      },
+      "QueueItemCreateRequest": {
+        "properties": {
+          "album_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Album Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "album_id"
+        ],
+        "title": "QueueItemCreateRequest",
+        "description": "Request to add an album to the queue."
+      },
+      "QueueItemGetResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "album": {
+            "$ref": "#/components/schemas/AlbumSummary"
+          },
+          "requested_by_ip": {
+            "type": "string",
+            "title": "Requested By Ip"
+          },
+          "votes": {
+            "$ref": "#/components/schemas/VoteGetResponse"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "album",
+          "requested_by_ip",
+          "votes",
+          "created_at"
+        ],
+        "title": "QueueItemGetResponse",
+        "description": "A single queue item with album info and vote state."
+      },
+      "QueueItemPromoteRequest": {
+        "properties": {
+          "queue_item_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Queue Item Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "queue_item_id"
+        ],
+        "title": "QueueItemPromoteRequest",
+        "description": "Request to promote a queue item to now playing."
+      },
+      "QueueStateResponse": {
+        "properties": {
+          "now_playing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NowPlayingGetResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "queue": {
+            "items": {
+              "$ref": "#/components/schemas/QueueItemGetResponse"
+            },
+            "type": "array",
+            "title": "Queue"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "now_playing",
+          "queue",
+          "count"
+        ],
+        "title": "QueueStateResponse",
+        "description": "Full queue state: now playing + ordered queue items."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VoteCastRequest": {
+        "properties": {
+          "value": {
+            "type": "integer",
+            "enum": [
+              1,
+              -1
+            ],
+            "title": "Value"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "title": "VoteCastRequest",
+        "description": "Request to cast or change a vote."
+      },
+      "VoteGetResponse": {
+        "properties": {
+          "up_count": {
+            "type": "integer",
+            "title": "Up Count"
+          },
+          "down_count": {
+            "type": "integer",
+            "title": "Down Count"
+          },
+          "my_vote": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "enum": [
+                  1,
+                  -1
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "My Vote"
+          }
+        },
+        "type": "object",
+        "required": [
+          "up_count",
+          "down_count",
+          "my_vote"
+        ],
+        "title": "VoteGetResponse",
+        "description": "Vote counts and the requesting client's vote on a queue item."
+      }
+    }
+  }
+}

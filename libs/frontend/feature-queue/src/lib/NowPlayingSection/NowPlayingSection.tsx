@@ -34,11 +34,11 @@ export function NowPlayingSection(props: INowPlayingSectionProps) {
     <div className={rootStyles}>
       <span className={badgeStyles}>Now Playing</span>
       <div className={contentStyles}>
-        {album.cover_art_url ? (
+        {album.cover_art_thumbnail_url ? (
           <img
             alt={`${album.title} by ${album.artist}`}
             className={coverArtStyles}
-            src={album.cover_art_url}
+            src={album.cover_art_thumbnail_url}
           />
         ) : (
           <div className={coverArtStyles} />

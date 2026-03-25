@@ -31,7 +31,7 @@ export function QueueView(props: IQueueViewProps) {
 
       {hasItems ? (
         <div className={listContainerStyles}>
-          <UpNextList items={data.items} />
+          <UpNextList items={data.queue} />
         </div>
       ) : (
         <EmptyState

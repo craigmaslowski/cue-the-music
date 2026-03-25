@@ -41,25 +41,23 @@ export function QueueItem(props: IQueueItemProps) {
 
       <div className={actionsStyles}>
         <VoteControls
-          downCount={item.down_count}
-          isDownVoted={item.my_vote === -1}
-          isUpVoted={item.my_vote === 1}
+          downCount={item.votes.down_count}
+          isDownVoted={item.votes.my_vote === -1}
+          isUpVoted={item.votes.my_vote === 1}
           onDownVote={handleDownVote}
           onUpVote={handleUpVote}
-          upCount={item.up_count}
+          upCount={item.votes.up_count}
         />
 
-        {item.is_mine && (
-          <button
-            aria-label="Cancel request"
-            className={cancelButtonStyles}
-            disabled={isCancelling}
-            onClick={handleCancel}
-            type="button"
-          >
-            &#x2715;
-          </button>
-        )}
+        <button
+          aria-label="Cancel request"
+          className={cancelButtonStyles}
+          disabled={isCancelling}
+          onClick={handleCancel}
+          type="button"
+        >
+          &#x2715;
+        </button>
       </div>
     </div>
   );

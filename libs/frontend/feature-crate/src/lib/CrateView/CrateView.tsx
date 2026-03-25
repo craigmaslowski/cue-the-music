@@ -27,14 +27,14 @@ export function CrateView(props: ICrateViewProps) {
   const { data: filterValues } = useAlbumFilters();
 
   const albums = albumData.albums;
-  const total = albumData.total;
+  const total = albumData.count;
   const hasNoCollection = total === 0 && !filters.search && !filters.genres && !filters.decades;
   const hasNoResults = albums.length === 0 && !hasNoCollection;
 
   return (
     <div className={rootStyles}>
       <CollectionSearch
-        decades={filterValues.decades}
+        decades={filterValues.decades.map(String)}
         genres={filterValues.genres}
         onDecadesChange={handleDecadesChange}
         onGenresChange={handleGenresChange}

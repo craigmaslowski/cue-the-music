@@ -1,42 +1,22 @@
+/**
+ * Album API types — derived from the generated OpenAPI schema.
+ * Do not hand-write API response types; regenerate from the backend instead.
+ */
+
+import type { components } from './generated-api';
+
 /** Album data as returned by the backend API. */
-export interface IAlbum {
-  artist: string;
-  cover_art_thumbnail_url: string | null;
-  cover_art_url: string | null;
-  created_at: string;
-  discogs_release_id: string;
-  genre_tags: string[];
-  id: number;
-  label: string | null;
-  style_tags: string[];
-  title: string;
-  tracklist: ITrack[] | null;
-  updated_at: string;
-  year: number | null;
-}
+export type IAlbum = components['schemas']['AlbumGetResponse'];
 
-/** Individual track within an album tracklist. */
-export interface ITrack {
-  duration: string;
-  position: string;
-  title: string;
-}
+/** Available filter values returned by the album-filters endpoint. */
+export type IAlbumFilterValues = components['schemas']['AlbumFilterGetResponse'];
 
-/** Filters applied when fetching the album collection. */
+/** Paginated album list response from the API. */
+export type IAlbumListResponse = components['schemas']['AlbumListResponse'];
+
+/** Filters applied when fetching the album collection (client-side type). */
 export interface IAlbumFilters {
   decades?: string[];
   genres?: string[];
   search?: string;
-}
-
-/** Available filter values returned by the album-filters endpoint. */
-export interface IAlbumFilterValues {
-  decades: string[];
-  genres: string[];
-}
-
-/** Paginated album list response from the API. */
-export interface IAlbumListResponse {
-  albums: IAlbum[];
-  total: number;
 }

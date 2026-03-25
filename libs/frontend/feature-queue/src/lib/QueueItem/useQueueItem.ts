@@ -18,7 +18,7 @@ export function useQueueItem(props: IQueueItemProps): IUseQueueItemReturn {
   }
 
   function handleUpVote(): void {
-    if (item.my_vote === 1) {
+    if (item.votes.my_vote === 1) {
       removeVoteMutation.mutate({ id: item.id });
     } else {
       voteMutation.mutate({ id: item.id, value: 1 });
@@ -26,7 +26,7 @@ export function useQueueItem(props: IQueueItemProps): IUseQueueItemReturn {
   }
 
   function handleDownVote(): void {
-    if (item.my_vote === -1) {
+    if (item.votes.my_vote === -1) {
       removeVoteMutation.mutate({ id: item.id });
     } else {
       voteMutation.mutate({ id: item.id, value: -1 });

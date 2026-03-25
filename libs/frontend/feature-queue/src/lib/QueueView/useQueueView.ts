@@ -8,6 +8,6 @@ export function useQueueView(_props: IQueueViewProps): IUseQueueViewReturn {
 
   return {
     count: data.count,
-    hasItems: data.items.length > 0,
+    hasItems: data.queue.length > 0,
   };
 }

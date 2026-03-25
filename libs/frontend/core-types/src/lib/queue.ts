@@ -1,42 +1,30 @@
-/** A queue item as returned by the backend API. */
-export interface IQueueItem {
-  album: IQueueAlbum;
-  created_at: string;
-  down_count: number;
-  id: number;
-  my_vote: -1 | 1 | null;
-  requested_by_ip: string;
-  up_count: number;
-}
+/**
+ * Queue, vote, and host API types — derived from the generated OpenAPI schema.
+ * Do not hand-write API response types; regenerate from the backend instead.
+ */
 
-/** Embedded album data within a queue item. */
-export interface IQueueAlbum {
-  artist: string;
-  cover_art_thumbnail_url: string | null;
-  id: number;
-  title: string;
-  year: number | null;
-}
-
-/** The currently playing album. */
-export interface INowPlaying {
-  album: IQueueAlbum;
-  promoted_at: string;
-}
+import type { components } from './generated-api';
 
 /** Full queue state response from GET /api/queue. */
-export interface IQueueResponse {
-  items: IQueueItem[];
-  now_playing: INowPlaying | null;
-}
+export type IQueueState = components['schemas']['QueueStateResponse'];
+
+/** A single queue item with album info and vote state. */
+export type IQueueItem = components['schemas']['QueueItemGetResponse'];
+
+/** Minimal album info embedded in queue responses. */
+export type IAlbumSummary = components['schemas']['AlbumSummary'];
+
+/** The currently playing album. */
+export type INowPlaying = components['schemas']['NowPlayingGetResponse'];
+
+/** Vote counts and the current client's vote on a queue item. */
+export type IVoteGetResponse = components['schemas']['VoteGetResponse'];
 
 /** Response from POST /api/host/verify-pin. */
-export interface IVerifyPinResponse {
-  token: string;
-}
+export type IVerifyPinResponse = components['schemas']['HostPinVerifyResponse'];
 
 /** Response from POST /api/host/sync. */
-export interface ISyncResponse {
-  album_count: number;
-  status: string;
-}
+export type ISyncResponse = components['schemas']['CollectionSyncTriggerResponse'];
+
+/** Request body for PUT /api/queue/{id}/vote. */
+export type IVoteCastRequest = components['schemas']['VoteCastRequest'];
