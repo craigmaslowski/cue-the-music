@@ -46,3 +46,6 @@ htmlcov/
 .playwright-mcp/
 
 tmp/
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
+test-output

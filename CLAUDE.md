@@ -26,7 +26,7 @@ Read and follow these standards documents. They are enforceable constraints, not
 - **Formatter:** Prettier
 - **Framework:** React 19
 - **Linter:** ESLint + typescript-eslint
-- **Routing:** React Router
+- **Routing:** TanStack Router
 - **State (server):** TanStack Query
 - **State (UI):** Zustand
 - **UI Library:** ark-ui + Panda CSS
