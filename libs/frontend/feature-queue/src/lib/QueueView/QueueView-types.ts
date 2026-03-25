@@ -1,5 +1,10 @@
+import type { ReactNode } from 'react';
+
+import type { IQueueItem } from '@cue-the-music/core-types';
+
 export interface IQueueViewProps {
-  /** No external props — QueueView is a top-level feature component. */
+  /** Optional render prop to inject per-item actions (e.g., host controls). */
+  renderItemActions?: (item: IQueueItem) => ReactNode;
 }
 
 export interface IUseQueueViewReturn {

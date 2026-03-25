@@ -54,4 +54,8 @@ export const deactivateButtonStyles = css({
   textDecoration: 'underline',
   textDecorationColor: 'onSurface.variant',
   textUnderlineOffset: '2px',
+  _disabled: {
+    cursor: 'not-allowed',
+    opacity: 0.5,
+  },
 });

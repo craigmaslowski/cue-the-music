@@ -1,8 +1,12 @@
+import type { ReactNode } from 'react';
+
 import type { IQueueItem } from '@cue-the-music/data-access-queue';
 
 export interface IQueueItemProps {
   /** Queue item data */
   item: IQueueItem;
+  /** Optional render prop to inject actions below the item (e.g., host controls). */
+  renderItemActions?: (item: IQueueItem) => ReactNode;
 }
 
 export interface IUseQueueItemReturn {

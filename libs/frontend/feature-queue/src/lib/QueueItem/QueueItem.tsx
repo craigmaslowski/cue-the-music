@@ -13,7 +13,7 @@ import { useQueueItem } from './useQueueItem';
 
 /** Single queue item with album info, vote controls, and optional cancel. */
 export function QueueItem(props: IQueueItemProps) {
-  const { item } = props;
+  const { item, renderItemActions } = props;
   const { handleCancel, handleDownVote, handleUpVote, isCancelling } =
     useQueueItem(props);
 
@@ -59,6 +59,8 @@ export function QueueItem(props: IQueueItemProps) {
           &#x2715;
         </button>
       </div>
+
+      {renderItemActions?.(item)}
     </div>
   );
 }

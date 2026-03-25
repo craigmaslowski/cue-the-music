@@ -15,6 +15,7 @@ import { useQueueView } from './useQueueView';
 
 /** Main queue view: Now Playing, Up Next header with count, and queue list. */
 export function QueueView(props: IQueueViewProps) {
+  const { renderItemActions } = props;
   const { count, hasItems } = useQueueView(props);
   const { data } = useQueue();
 
@@ -31,7 +32,7 @@ export function QueueView(props: IQueueViewProps) {
 
       {hasItems ? (
         <div className={listContainerStyles}>
-          <UpNextList items={data.queue} />
+          <UpNextList items={data.queue} renderItemActions={renderItemActions} />
         </div>
       ) : (
         <EmptyState

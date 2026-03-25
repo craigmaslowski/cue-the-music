@@ -1,5 +1,5 @@
 import type { ISyncResponse, IVerifyPinResponse } from '@cue-the-music/core-types';
-import { ApiError } from '@cue-the-music/data-access-collection';
+import { albumKeys, ApiError } from '@cue-the-music/data-access-collection';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { hostFetch } from './host-fetch';
@@ -80,6 +80,8 @@ export function useRemoveQueueItem(options: IHostMutationOptions) {
 
 /** Mutation hook for POST /api/host/sync — triggers Discogs sync. */
 export function useTriggerSync(options: IHostMutationOptions) {
+  const queryClient = useQueryClient();
+
   return useMutation<ISyncResponse, ApiError, void>({
     mutationFn: () =>
       hostFetch<ISyncResponse>(
@@ -88,5 +90,8 @@ export function useTriggerSync(options: IHostMutationOptions) {
         { method: 'POST' },
         options.onUnauthorized,
       ),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: albumKeys.all });
+    },
   });
 }

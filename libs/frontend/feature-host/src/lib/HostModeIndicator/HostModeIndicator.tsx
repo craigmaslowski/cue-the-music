@@ -28,6 +28,7 @@ export function HostModeIndicator(props: IHostModeIndicatorProps) {
         <SyncButton isSyncing={isSyncing} onSync={handleSync} />
         <button
           className={deactivateButtonStyles}
+          disabled={isSyncing}
           onClick={handleDeactivate}
           type="button"
         >
