@@ -35,6 +35,36 @@ export const labelStyles = css({
   textTransform: 'uppercase',
 });
 
+/** Clear All button — destructive pink/red outline pill */
+export const clearAllButtonStyles = css({
+  alignItems: 'center',
+  backgroundColor: 'transparent',
+  borderColor: 'rgba(255, 107, 155, 0.3)',
+  borderRadius: 'full',
+  borderWidth: '1px',
+  color: 'secondary',
+  cursor: 'pointer',
+  display: 'flex',
+  fontFamily: 'heading',
+  fontSize: 'labelMd',
+  fontWeight: 700,
+  gap: '1',
+  letterSpacing: 'tight',
+  paddingBottom: '0.25rem',
+  paddingLeft: '0.5rem',
+  paddingRight: '0.5rem',
+  paddingTop: '0.25rem',
+  textTransform: 'uppercase',
+  transition: 'opacity 0.2s ease',
+  _active: {
+    opacity: 0.8,
+  },
+  _disabled: {
+    cursor: 'not-allowed',
+    opacity: 0.5,
+  },
+});
+
 /** Right-side actions container */
 export const actionsStyles = css({
   alignItems: 'center',

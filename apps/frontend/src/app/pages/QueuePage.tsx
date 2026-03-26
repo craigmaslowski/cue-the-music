@@ -9,8 +9,15 @@ import { useQueuePage } from './useQueuePage';
 
 /** Page component for the Queue route — mounts host controls at the app layer. */
 export function QueuePage() {
-  const { handlePromote, handleRemove, handleSync, isHostMode, isSyncing } =
-    useQueuePage();
+  const {
+    handleClearQueue,
+    handlePromote,
+    handleRemove,
+    handleSync,
+    isClearing,
+    isHostMode,
+    isSyncing,
+  } = useQueuePage();
 
   /* Render prop injected into QueueView -> UpNextList -> QueueItem to show
      host controls per item without feature-queue importing feature-host. */
@@ -26,7 +33,12 @@ export function QueuePage() {
 
   return (
     <>
-      <HostModeIndicator isSyncing={isSyncing} onSync={handleSync} />
+      <HostModeIndicator
+        isClearing={isClearing}
+        isSyncing={isSyncing}
+        onClearQueue={handleClearQueue}
+        onSync={handleSync}
+      />
       <QueueView renderItemActions={renderItemActions} />
     </>
   );

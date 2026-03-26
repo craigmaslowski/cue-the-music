@@ -10,9 +10,13 @@ import type {
 export function useHostModeIndicator(
   props: IHostModeIndicatorProps,
 ): IUseHostModeIndicatorReturn {
-  const { onSync } = props;
+  const { onClearQueue, onSync } = props;
   const isHostMode = useHostStore((s) => s.isHostMode);
   const deactivateHostMode = useHostStore((s) => s.deactivateHostMode);
+
+  const handleClearQueue = useCallback(() => {
+    onClearQueue();
+  }, [onClearQueue]);
 
   const handleSync = useCallback(() => {
     onSync();
@@ -23,8 +27,9 @@ export function useHostModeIndicator(
   }, [deactivateHostMode]);
 
   return {
-    isHostMode,
-    handleSync,
+    handleClearQueue,
     handleDeactivate,
+    handleSync,
+    isHostMode,
   };
 }

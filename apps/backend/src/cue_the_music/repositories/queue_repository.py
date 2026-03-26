@@ -123,6 +123,10 @@ class QueueRepository:
         result = await self._session.execute(stmt)
         return result.scalar_one()
 
+    async def clear_all(self) -> None:
+        """Delete all queue items (cascades to votes)."""
+        await self._session.execute(delete(QueueItem))
+
     async def get_queue_item(self, queue_item_id: int) -> QueueItem | None:
         """Get a single queue item by ID."""
         return await self._session.get(QueueItem, queue_item_id)

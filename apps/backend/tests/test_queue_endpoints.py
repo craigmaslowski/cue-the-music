@@ -286,6 +286,45 @@ class TestHostQueueEndpoints:
 
         assert response.status_code == 404
 
+    async def test_clear_queue_removes_all_items_and_now_playing(
+        self, client: AsyncClient, async_engine, monkeypatch
+    ) -> None:
+        monkeypatch.setenv("HOST_PIN", "1234")
+        token = await get_host_token(client)
+        headers = {"X-Host-Token": token}
+
+        # Seed two albums, add both to queue, promote one to now playing
+        album1 = await _seed_album(async_engine, discogs_release_id="e040")
+        album2 = await _seed_album(async_engine, discogs_release_id="e041")
+        resp1 = await client.post("/api/queue", json={"album_id": album1["id"]})
+        await client.post("/api/queue", json={"album_id": album2["id"]})
+        qi_id = resp1.json()["id"]
+        await client.post(
+            "/api/host/now-playing",
+            json={"queue_item_id": qi_id},
+            headers=headers,
+        )
+
+        response = await client.delete("/api/host/queue", headers=headers)
+
+        assert response.status_code == 204
+
+        state = await client.get("/api/queue")
+        data = state.json()
+        assert data["count"] == 0
+        assert data["now_playing"] is None
+
+    async def test_clear_queue_on_empty_is_idempotent(
+        self, client: AsyncClient, monkeypatch
+    ) -> None:
+        monkeypatch.setenv("HOST_PIN", "1234")
+        token = await get_host_token(client)
+        headers = {"X-Host-Token": token}
+
+        response = await client.delete("/api/host/queue", headers=headers)
+
+        assert response.status_code == 204
+
     async def test_host_endpoints_reject_without_token(
         self, client: AsyncClient
     ) -> None:
@@ -296,6 +335,9 @@ class TestHostQueueEndpoints:
         assert response.status_code == 403
 
         response = await client.delete("/api/host/now-playing")
+        assert response.status_code == 403
+
+        response = await client.delete("/api/host/queue")
         assert response.status_code == 403
 
         response = await client.delete("/api/host/queue/1")

@@ -202,6 +202,13 @@ class QueueService:
 
         await self._broadcast("queue_update", {"reason": "now_playing_cleared"})
 
+    async def clear_queue(self) -> None:
+        """Clear all queue items and now playing."""
+        await self._queue_repo.clear_all()
+        await self._now_playing_repo.clear()
+
+        await self._broadcast("queue_update", {"reason": "queue_cleared"})
+
 
 async def get_queue_service(
     album_repo: Annotated[AlbumRepository, Depends(get_album_repository)],

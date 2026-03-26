@@ -87,9 +87,12 @@ export const tabTriggerStyles = css({
 
 /** App title in the header */
 export const titleStyles = css({
+  alignItems: 'center',
   color: 'primary',
+  display: 'flex',
   fontFamily: 'heading',
   fontSize: 'headlineLg',
   fontWeight: 700,
+  gap: 4,
   letterSpacing: 'tight',
 });

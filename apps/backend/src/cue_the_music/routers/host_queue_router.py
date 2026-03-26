@@ -34,6 +34,15 @@ async def clear_now_playing(
     await service.clear_now_playing()
 
 
+@router.delete("/queue", status_code=204)
+async def clear_queue(
+    _auth: HostAuthDep,
+    service: Annotated[QueueService, Depends(get_queue_service)],
+) -> None:
+    """Clear all queue items and now playing (host action)."""
+    await service.clear_queue()
+
+
 @router.delete("/queue/{queue_item_id}", status_code=204)
 async def skip_queue_item(
     _auth: HostAuthDep,

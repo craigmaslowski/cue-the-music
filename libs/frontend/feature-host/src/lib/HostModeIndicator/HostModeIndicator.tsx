@@ -1,6 +1,7 @@
 import { SyncButton } from '../SyncButton';
 import {
   actionsStyles,
+  clearAllButtonStyles,
   deactivateButtonStyles,
   dotStyles,
   labelStyles,
@@ -10,13 +11,15 @@ import {
 import type { IHostModeIndicatorProps } from './HostModeIndicator-types';
 import { useHostModeIndicator } from './useHostModeIndicator';
 
-/** "HOST MODE ACTIVE" indicator with sync button and deactivate option. */
+/** "HOST MODE ACTIVE" indicator with clear, sync, and deactivate actions. */
 export function HostModeIndicator(props: IHostModeIndicatorProps) {
-  const { isSyncing } = props;
-  const { isHostMode, handleSync, handleDeactivate } =
+  const { isClearing, isSyncing } = props;
+  const { isHostMode, handleClearQueue, handleSync, handleDeactivate } =
     useHostModeIndicator(props);
 
   if (!isHostMode) return null;
+
+  const isBusy = isClearing || isSyncing;
 
   return (
     <div className={rootStyles}>
@@ -25,10 +28,18 @@ export function HostModeIndicator(props: IHostModeIndicatorProps) {
         <span className={labelStyles}>Host Mode Active</span>
       </div>
       <div className={actionsStyles}>
+        <button
+          className={clearAllButtonStyles}
+          disabled={isBusy}
+          onClick={handleClearQueue}
+          type="button"
+        >
+          Clear All
+        </button>
         <SyncButton isSyncing={isSyncing} onSync={handleSync} />
         <button
           className={deactivateButtonStyles}
-          disabled={isSyncing}
+          disabled={isBusy}
           onClick={handleDeactivate}
           type="button"
         >
