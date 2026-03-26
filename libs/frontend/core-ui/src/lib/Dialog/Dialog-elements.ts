@@ -32,7 +32,7 @@ export const closeTriggerStyles = css({
 
 /** Main dialog panel — flex column, does not scroll */
 export const contentStyles = css({
-  backgroundColor: 'surface.containerHigh',
+  backgroundColor: 'surface.containerLowest',
   borderRadius: 'xl',
   boxShadow: 'ambient',
   display: 'flex',

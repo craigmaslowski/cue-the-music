@@ -5,25 +5,22 @@ import type {
   IUseGenreFilterReturn,
 } from './GenreFilter-types';
 
-const TOP_GENRE_COUNT = 3;
+const TOP_GENRE_COUNT = 5;
 
 /** Encapsulates GenreFilter state and toggle logic. */
 export function useGenreFilter(
-  props: IGenreFilterProps,
+  props: IGenreFilterProps
 ): IUseGenreFilterReturn {
   const { genres, onSelectionChange, selectedGenres } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const topGenres = useMemo(
-    () => genres.slice(0, TOP_GENRE_COUNT),
-    [genres],
-  );
+  const topGenres = useMemo(() => genres.slice(0, TOP_GENRE_COUNT), [genres]);
 
   const hasSelection = selectedGenres.length > 0;
 
   const isSelected = useCallback(
     (genre: string): boolean => selectedGenres.includes(genre),
-    [selectedGenres],
+    [selectedGenres]
   );
 
   const handleToggle = useCallback(
@@ -33,7 +30,7 @@ export function useGenreFilter(
         : [...selectedGenres, genre];
       onSelectionChange(next);
     },
-    [onSelectionChange, selectedGenres],
+    [onSelectionChange, selectedGenres]
   );
 
   const handleClear = useCallback((): void => {

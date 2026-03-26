@@ -70,7 +70,10 @@ export default defineConfig({
         fontSizes: {
           displayLg: { value: '3.5rem' },
           headlineLg: { value: '2rem' },
+          headlineMd: { value: '2rem' },
+          bodyXl: { value: '1.25rem' },
           bodyLg: { value: '1rem' },
+          labelLg: { value: '0.875rem' },
           labelMd: { value: '0.75rem' },
         },
 
@@ -86,7 +89,8 @@ export default defineConfig({
         shadows: {
           ambient: { value: '0px 12px 24px rgba(0, 0, 0, 0.5)' },
           neonGlow: {
-            value: '0px 12px 24px rgba(0, 0, 0, 0.5), 0px 0px 20px rgba(202, 253, 0, 0.1)',
+            value:
+              '0px 12px 24px rgba(0, 0, 0, 0.5), 0px 0px 20px rgba(202, 253, 0, 0.1)',
           },
           neonPink: {
             value: '0px 0px 12px rgba(186, 0, 91, 0.4)',

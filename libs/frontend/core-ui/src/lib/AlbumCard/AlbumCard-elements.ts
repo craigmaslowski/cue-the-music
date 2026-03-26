@@ -4,7 +4,7 @@ import { css } from '@styled-system/css';
 export const artistStyles = css({
   color: 'onSurface.variant',
   fontFamily: 'body',
-  fontSize: 'labelMd',
+  fontSize: 'labelLg',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
@@ -23,7 +23,7 @@ export const coverArtStyles = css({
 
 /** Card root — uses ambient shadow, scale-down press animation */
 export const rootStyles = css({
-  backgroundColor: 'surface.containerHighest',
+  // a1faffbackgroundColor: 'surface.containerHighest',
   borderRadius: 'xl',
   boxShadow: 'ambient',
   cursor: 'pointer',
@@ -36,10 +36,11 @@ export const rootStyles = css({
 
 /** Text container below the cover art */
 export const textContainerStyles = css({
+  alignItems: 'flex-start',
   display: 'flex',
   flexDirection: 'column',
-  gap: '0.5',
-  padding: '3',
+  gap: '0.25',
+  padding: '2',
 });
 
 /** Album title */
@@ -56,7 +57,7 @@ export const titleStyles = css({
 
 /** Release year label */
 export const yearStyles = css({
-  color: 'onSurface.variant',
+  color: 'tertiary',
   fontFamily: 'body',
-  fontSize: 'labelMd',
+  fontSize: 'labelLg',
 });

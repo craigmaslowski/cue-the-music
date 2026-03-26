@@ -26,6 +26,7 @@ export const titleStyles = css({
   fontSize: 'headlineLg',
   fontWeight: 700,
   letterSpacing: 'tight',
+  lineHeight: '36px',
 });
 
 /** Artist name in overlay */
@@ -52,13 +53,17 @@ export const chipContainerStyles = css({
 
 /** Individual genre/style chip in detail view */
 export const genreChipStyles = css({
-  backgroundColor: 'surface.variant',
+  backgroundColor: 'surface.container',
+  borderColor: 'surface.containerHighest',
   borderRadius: 'full',
-  color: 'onSurface',
+  borderWidth: '1px',
+  color: 'tertiary',
   fontFamily: 'body',
   fontSize: 'labelMd',
+  fontWeight: '600',
   paddingBlock: '1',
   paddingInline: '2.5',
+  textTransform: 'uppercase',
 });
 
 /** Tracklist section */
@@ -68,10 +73,13 @@ export const tracklistSectionStyles = css({
 
 /** Tracklist heading */
 export const tracklistHeadingStyles = css({
+  alignItems: 'center',
   color: 'onSurface',
+  display: 'flex',
   fontFamily: 'heading',
   fontSize: 'bodyLg',
   fontWeight: 600,
+  gap: '4',
   marginBottom: '3',
 });
 
@@ -85,9 +93,10 @@ export const trackRowStyles = css({
 
 /** Track position (A1, B1, etc.) */
 export const trackPositionStyles = css({
-  color: 'onSurface.variant',
+  color: 'secondary',
   fontFamily: 'body',
-  fontSize: 'labelMd',
+  fontSize: 'bodyLg',
+  fontWeight: '600',
   minWidth: '2rem',
 });
 
@@ -118,7 +127,8 @@ export const skeletonLineStyles = css({
 
 /** Primary action button — gradient neon style, sticky at bottom of scroll area */
 export const requestButtonStyles = css({
-  background: 'linear-gradient(135deg, token(colors.primary), token(colors.primary.container))',
+  background:
+    'linear-gradient(135deg, token(colors.primary), token(colors.primary.container))',
   borderRadius: 'full',
   bottom: 0,
   color: 'primary.onFixed',

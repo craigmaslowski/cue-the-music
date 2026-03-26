@@ -70,7 +70,12 @@ export function AlbumDetailContent(props: IAlbumDetailContentProps) {
       )}
 
       <div className={tracklistSectionStyles}>
-        <h4 className={tracklistHeadingStyles}>Tracklist</h4>
+        <h4 className={tracklistHeadingStyles}>
+          <span className="material-symbols-outlined">
+            format_list_bulleted
+          </span>{' '}
+          Tracklist
+        </h4>
         {isTracklistLoading ? (
           <div>
             {Array.from({ length: 6 }, (_, i) => (
