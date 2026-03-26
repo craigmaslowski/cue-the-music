@@ -116,10 +116,11 @@ export const skeletonLineStyles = css({
   width: '100%',
 });
 
-/** Primary action button — gradient neon style */
+/** Primary action button — gradient neon style, sticky at bottom of scroll area */
 export const requestButtonStyles = css({
   background: 'linear-gradient(135deg, token(colors.primary), token(colors.primary.container))',
   borderRadius: 'full',
+  bottom: 0,
   color: 'primary.onFixed',
   cursor: 'pointer',
   fontFamily: 'body',
@@ -128,9 +129,11 @@ export const requestButtonStyles = css({
   marginTop: '5',
   paddingBlock: '3',
   paddingInline: '6',
+  position: 'sticky',
   textAlign: 'center',
   transition: 'opacity 0.15s ease',
   width: '100%',
+  zIndex: 1,
   _disabled: {
     cursor: 'not-allowed',
     opacity: 0.5,
