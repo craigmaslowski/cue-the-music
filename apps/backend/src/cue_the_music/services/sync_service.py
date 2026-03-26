@@ -27,6 +27,14 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class ResolvedMasterData:
+    """Year and tracklist resolved from a Discogs master release."""
+
+    tracklist: list[dict[str, str]] | None
+    year: int | None
+
+
+@dataclass
 class SyncResult:
     """Summary of a completed sync operation."""
 
@@ -100,33 +108,35 @@ class SyncService:
     ) -> int:
         """Upsert a page of releases into the albums table.
 
-        Resolves master release years outside the DB transaction to avoid
-        holding the write lock during rate-limited API calls. Then upserts
-        all albums in a single per-page transaction.
+        Resolves master release years and tracklists outside the DB transaction
+        to avoid holding the write lock during rate-limited API calls. Then
+        upserts all albums in a single per-page transaction.
         """
-        # Phase 1: resolve master years (HTTP calls, no DB lock)
-        resolved_years = await self._resolve_years_for_page(releases)
+        # Phase 1: resolve master data (HTTP calls, no DB lock)
+        resolved_data = await self._resolve_master_data_for_page(releases)
 
         # Phase 2: upsert albums (DB writes, no HTTP calls)
         async with async_session_factory() as session, session.begin():
             for release in releases:
                 discogs_id = str(release.basic_information.id)
-                await self._upsert_album(session, release, resolved_years.get(discogs_id))
+                await self._upsert_album(
+                    session, release, resolved_data.get(discogs_id)
+                )
         return len(releases)
 
-    async def _resolve_years_for_page(
+    async def _resolve_master_data_for_page(
         self,
         releases: list[DiscogsCollectionRelease],
-    ) -> dict[str, int | None]:
-        """Resolve original release years for a page of releases.
+    ) -> dict[str, ResolvedMasterData]:
+        """Resolve original release years and tracklists for a page of releases.
 
-        Checks the DB for already-resolved master years to skip redundant
-        API calls. Returns a mapping of discogs_release_id -> resolved year.
+        Checks the DB for already-resolved data to skip redundant API calls.
+        Returns a mapping of discogs_release_id -> ResolvedMasterData.
         """
-        resolved: dict[str, int | None] = {}
+        resolved: dict[str, ResolvedMasterData] = {}
 
-        # Check which albums already have resolved master years in the DB
-        already_resolved: dict[str, tuple[int | None, int | None]] = {}
+        # Check which albums already have resolved master data in the DB
+        already_resolved: dict[str, tuple[int | None, int | None, bool]] = {}
         async with async_session_factory() as session:
             for release in releases:
                 discogs_id = str(release.basic_information.id)
@@ -137,6 +147,7 @@ class SyncService:
                     already_resolved[discogs_id] = (
                         existing.discogs_master_id,
                         existing.year,
+                        existing.tracklist is not None,
                     )
 
         for release in releases:
@@ -144,56 +155,76 @@ class SyncService:
             discogs_id = str(info.id)
             master_id = info.master_id
 
-            # Skip master fetch if year was already resolved from this master
+            # Skip master fetch if year and tracklist already resolved from this master
             cached = already_resolved.get(discogs_id)
-            if cached and cached[0] == master_id and cached[1]:
-                resolved[discogs_id] = cached[1]
+            if cached and cached[0] == master_id and cached[1] and cached[2]:
+                resolved[discogs_id] = ResolvedMasterData(
+                    tracklist=None,  # None signals "keep existing"
+                    year=cached[1],
+                )
             else:
-                resolved[discogs_id] = await self._resolve_year(
+                resolved[discogs_id] = await self._resolve_master(
                     master_id, info.year
                 )
 
         return resolved
 
-    async def _resolve_year(
+    async def _resolve_master(
         self,
         master_id: int,
         release_year: int,
-    ) -> int | None:
-        """Resolve original release year from master, falling back to release year.
+    ) -> ResolvedMasterData:
+        """Resolve year and tracklist from master release.
 
-        If master_id is valid (> 0), fetches the master release and uses its
-        year. Falls back to release_year on failure or when no master exists.
-        Returns None when both sources report 0 (unknown).
+        If master_id is valid (> 0), fetches the master release and extracts
+        both year and tracklist. Falls back to release_year on failure or when
+        no master exists. Returns None tracklist when no master is available.
         """
         if master_id > 0:
             try:
                 master = await self._discogs_client.get_master_release(master_id)
-                if master.year > 0:
-                    return master.year
+                year = master.year if master.year > 0 else (
+                    release_year if release_year > 0 else None
+                )
+                # Extract tracklist, filtering section headings
+                tracklist = [
+                    {
+                        "duration": track.duration,
+                        "position": track.position,
+                        "title": track.title,
+                    }
+                    for track in master.tracklist
+                    if track.type_ != "heading"
+                ] or None
+                return ResolvedMasterData(tracklist=tracklist, year=year)
             except Exception:
                 logger.warning(
                     "Failed to fetch master %d, using release year",
                     master_id,
                     exc_info=True,
                 )
-        return release_year if release_year > 0 else None
+        year = release_year if release_year > 0 else None
+        return ResolvedMasterData(tracklist=None, year=year)
 
     async def _upsert_album(
         self,
         session: AsyncSession,
         release: DiscogsCollectionRelease,
-        resolved_year: int | None,
+        master_data: ResolvedMasterData | None,
     ) -> None:
         """Insert or update a single album from a Discogs collection release.
 
         Matches on discogs_release_id. Updates metadata if the album exists,
-        inserts a new row if it does not. Tracklist is not touched here --
-        it is lazily fetched on detail view.
+        inserts a new row if it does not.
         """
         info = release.basic_information
         discogs_id = str(info.id)
         master_id = info.master_id
+
+        resolved_year = master_data.year if master_data else (
+            info.year if info.year > 0 else None
+        )
+        resolved_tracklist = master_data.tracklist if master_data else None
 
         # Look up existing album by Discogs release ID
         stmt = select(Album).where(Album.discogs_release_id == discogs_id)
@@ -207,7 +238,7 @@ class SyncService:
         label_name = info.labels[0].name if info.labels else None
 
         if existing:
-            # Update existing album metadata (but not tracklist)
+            # Update existing album metadata
             existing.artist = artist_name
             existing.cover_art_thumbnail_url = info.thumb or None
             existing.cover_art_url = info.cover_image or None
@@ -217,6 +248,9 @@ class SyncService:
             existing.style_tags = info.styles
             existing.title = info.title
             existing.year = resolved_year
+            # Only set tracklist if currently NULL and we have new data
+            if existing.tracklist is None and resolved_tracklist is not None:
+                existing.tracklist = resolved_tracklist
         else:
             # Insert new album
             album = Album(
@@ -229,7 +263,7 @@ class SyncService:
                 label=label_name,
                 style_tags=info.styles,
                 title=info.title,
-                tracklist=None,
+                tracklist=resolved_tracklist,
                 year=resolved_year,
             )
             session.add(album)

@@ -16,6 +16,7 @@ from cue_the_music.integrations.discogs_client import (
     DiscogsLabel,
     DiscogsMasterRelease,
     DiscogsPagination,
+    DiscogsTrack,
 )
 from cue_the_music.models.album import Album
 from cue_the_music.services.sync_service import SyncService
@@ -259,7 +260,16 @@ class TestMasterReleaseYearResolution:
             ],
         )
         mock_client.get_master_release.return_value = DiscogsMasterRelease(
-            id=5678, year=1969
+            id=5678,
+            tracklist=[
+                DiscogsTrack(
+                    duration="7:47", position="A1", title="Come Together", type_="track"
+                ),
+                DiscogsTrack(
+                    duration="3:26", position="A2", title="Something", type_="track"
+                ),
+            ],
+            year=1969,
         )
 
         test_session_factory = async_sessionmaker(
@@ -279,6 +289,128 @@ class TestMasterReleaseYearResolution:
             assert len(albums) == 1
             assert albums[0].year == 1969
             assert albums[0].discogs_master_id == 5678
+
+    async def test_persists_tracklist_from_master(
+        self, async_engine, async_session: AsyncSession
+    ) -> None:
+        """Tracklist from master release is persisted during sync."""
+        mock_client = AsyncMock()
+        mock_client.get_collection_page.return_value = _make_collection_response(
+            releases=[
+                _make_release(12345, "Artist", "Album", year=2020, master_id=5678),
+            ],
+        )
+        mock_client.get_master_release.return_value = DiscogsMasterRelease(
+            id=5678,
+            tracklist=[
+                DiscogsTrack(
+                    duration="5:00", position="A1", title="Track One", type_="track"
+                ),
+                DiscogsTrack(
+                    duration="", position="", title="Side B", type_="heading"
+                ),
+                DiscogsTrack(
+                    duration="3:30", position="B1", title="Track Two", type_="track"
+                ),
+            ],
+            year=1969,
+        )
+
+        test_session_factory = async_sessionmaker(
+            async_engine, expire_on_commit=False
+        )
+        with patch(
+            "cue_the_music.services.sync_service.async_session_factory",
+            test_session_factory,
+        ):
+            service = SyncService(
+                discogs_client=mock_client, settings=_make_settings()
+            )
+            await service.sync_collection()
+
+        async with test_session_factory() as session:
+            albums = (await session.execute(select(Album))).scalars().all()
+            assert len(albums) == 1
+            tracklist = albums[0].tracklist
+            assert tracklist is not None
+            # Heading tracks should be filtered out
+            assert len(tracklist) == 2
+            assert tracklist[0]["title"] == "Track One"
+            assert tracklist[1]["title"] == "Track Two"
+
+    async def test_tracklist_null_without_master(
+        self, async_engine, async_session: AsyncSession
+    ) -> None:
+        """Albums without a master_id have tracklist=NULL (lazy-fetch fallback)."""
+        mock_client = AsyncMock()
+        mock_client.get_collection_page.return_value = _make_collection_response(
+            releases=[
+                _make_release(12345, "Artist", "Album", year=1985, master_id=0),
+            ],
+        )
+
+        test_session_factory = async_sessionmaker(
+            async_engine, expire_on_commit=False
+        )
+        with patch(
+            "cue_the_music.services.sync_service.async_session_factory",
+            test_session_factory,
+        ):
+            service = SyncService(
+                discogs_client=mock_client, settings=_make_settings()
+            )
+            await service.sync_collection()
+
+        async with test_session_factory() as session:
+            albums = (await session.execute(select(Album))).scalars().all()
+            assert len(albums) == 1
+            assert albums[0].tracklist is None
+
+    async def test_resync_does_not_overwrite_existing_tracklist(
+        self, async_engine, async_session: AsyncSession
+    ) -> None:
+        """Re-sync preserves an existing tracklist (may have been lazy-fetched)."""
+        test_session_factory = async_sessionmaker(
+            async_engine, expire_on_commit=False
+        )
+        # Seed album with a lazy-fetched tracklist
+        async with test_session_factory() as session, session.begin():
+            session.add(
+                Album(
+                    artist="Artist",
+                    discogs_master_id=5678,
+                    discogs_release_id="12345",
+                    genre_tags=["Rock"],
+                    title="Album",
+                    tracklist=[{"duration": "4:00", "position": "1", "title": "Original"}],
+                    year=1969,
+                )
+            )
+
+        mock_client = AsyncMock()
+        mock_client.get_collection_page.return_value = _make_collection_response(
+            releases=[
+                _make_release(12345, "Artist", "Album", year=2020, master_id=5678),
+            ],
+        )
+
+        with patch(
+            "cue_the_music.services.sync_service.async_session_factory",
+            test_session_factory,
+        ):
+            service = SyncService(
+                discogs_client=mock_client, settings=_make_settings()
+            )
+            await service.sync_collection()
+
+        # Master fetch should be skipped (year + tracklist already cached)
+        mock_client.get_master_release.assert_not_called()
+
+        async with test_session_factory() as session:
+            albums = (await session.execute(select(Album))).scalars().all()
+            assert len(albums) == 1
+            # Original tracklist preserved
+            assert albums[0].tracklist[0]["title"] == "Original"
 
     async def test_falls_back_to_release_year_without_master(
         self, async_engine, async_session: AsyncSession
@@ -345,11 +477,11 @@ class TestMasterReleaseYearResolution:
     async def test_skips_master_fetch_when_already_resolved(
         self, async_engine, async_session: AsyncSession
     ) -> None:
-        """Re-sync skips master fetch when master_id matches and year is set."""
+        """Re-sync skips master fetch when master_id matches, year is set, and tracklist exists."""
         test_session_factory = async_sessionmaker(
             async_engine, expire_on_commit=False
         )
-        # Seed album with resolved master year
+        # Seed album with resolved master year and tracklist
         async with test_session_factory() as session, session.begin():
             session.add(
                 Album(
@@ -358,6 +490,7 @@ class TestMasterReleaseYearResolution:
                     discogs_release_id="12345",
                     genre_tags=["Rock"],
                     title="Abbey Road",
+                    tracklist=[{"duration": "7:47", "position": "A1", "title": "Come Together"}],
                     year=1969,
                 )
             )

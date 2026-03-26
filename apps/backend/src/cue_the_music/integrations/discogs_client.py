@@ -122,6 +122,7 @@ class DiscogsMasterRelease(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     id: int
+    tracklist: list[DiscogsTrack] = []
     year: int = 0
 
 
