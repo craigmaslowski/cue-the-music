@@ -6,9 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ISSEProviderProps, IUseSSEProviderReturn } from './SSEProvider-types';
 
 const DEFAULT_URL =
-  (typeof import.meta !== 'undefined' &&
-    import.meta.env?.VITE_API_BASE_URL) ||
-  'http://localhost:8000';
+  import.meta.env?.VITE_API_BASE_URL ??
+  `http://${window.location.hostname}:8000`;
 
 const STALENESS_TIMEOUT_MS = 45_000;
 
