@@ -12,6 +12,8 @@ export interface ISearchInputProps {
 export interface IUseSearchInputReturn {
   /** Handler for input change events */
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  /** Handler for clearing the input */
+  handleClear: () => void;
   /** Current input display value (may differ from debounced value) */
   inputValue: string;
 }
