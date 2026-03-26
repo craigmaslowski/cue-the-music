@@ -32,7 +32,7 @@ export const triggerStyles = css({
   color: 'onSurface.variant',
   cursor: 'pointer',
   fontFamily: 'heading',
-  fontSize: 'labelMd',
+  fontSize: 'bodyXl',
   fontWeight: 600,
   letterSpacing: 'tight',
   padding: '3',
@@ -40,6 +40,7 @@ export const triggerStyles = css({
   transition: 'color 0.2s ease',
   width: '50%',
   _selected: {
+    backgroundColor: 'surface.containerHighest',
     color: 'primary',
   },
 });

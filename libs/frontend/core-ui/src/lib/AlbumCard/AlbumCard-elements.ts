@@ -2,7 +2,7 @@ import { css } from '@styled-system/css';
 
 /** Artist name below the title */
 export const artistStyles = css({
-  color: 'onSurface.variant',
+  color: 'onSurface',
   fontFamily: 'body',
   fontSize: 'labelLg',
   overflow: 'hidden',

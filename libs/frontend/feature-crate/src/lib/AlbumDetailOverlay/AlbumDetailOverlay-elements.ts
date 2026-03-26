@@ -26,21 +26,31 @@ export const titleStyles = css({
   fontSize: 'headlineLg',
   fontWeight: 700,
   letterSpacing: 'tight',
-  lineHeight: '36px',
+  lineHeight: '32px',
 });
 
 /** Artist name in overlay */
-export const artistStyles = css({
+export const artistLineStyles = css({
   color: 'onSurface',
   fontFamily: 'body',
   fontSize: 'bodyLg',
+  textTransform: 'uppercase',
+});
+
+export const artistStyles = css({
+  color: 'primary',
+  fontSize: 'bodyXl',
+  fontWeight: '700',
 });
 
 /** Label and year info line */
-export const infoLineStyles = css({
-  color: 'onSurface.variant',
+export const labelStyles = css({
+  color: 'secondary',
   fontFamily: 'body',
-  fontSize: 'labelMd',
+  fontSize: 'bodyLg',
+  fontWeight: '600',
+  letterSpacing: 'tighter',
+  textTransform: 'uppercase',
 });
 
 /** Container for genre/style chips */
@@ -93,7 +103,7 @@ export const trackRowStyles = css({
 
 /** Track position (A1, B1, etc.) */
 export const trackPositionStyles = css({
-  color: 'secondary',
+  color: 'primary',
   fontFamily: 'body',
   fontSize: 'bodyLg',
   fontWeight: '600',

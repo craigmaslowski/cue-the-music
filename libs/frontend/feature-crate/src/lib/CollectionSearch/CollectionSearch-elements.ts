@@ -42,3 +42,9 @@ export const filtersStyles = css({
   gap: '3',
   paddingInline: '3',
 });
+
+export const albumCountFiltersToggleStyles = css({
+  display: 'flex',
+  justifyContent: 'space-between',
+  width: '100%',
+});
