@@ -53,7 +53,9 @@ export function AlbumDetailContent(props: IAlbumDetailContentProps) {
         <h3 className={titleStyles}>{album.title}</h3>
         <span className={artistStyles}>{album.artist}</span>
         {infoSegments.length > 0 && (
-          <span className={infoLineStyles}>{infoSegments.join(' \u00B7 ')}</span>
+          <span className={infoLineStyles}>
+            {infoSegments.join(' \u00B7 ')}
+          </span>
         )}
       </div>
 
@@ -77,7 +79,10 @@ export function AlbumDetailContent(props: IAlbumDetailContentProps) {
           </div>
         ) : (
           album.tracklist?.map((track) => (
-            <div className={trackRowStyles} key={`${track.position}-${track.title}`}>
+            <div
+              className={trackRowStyles}
+              key={`${track.position}-${track.title}`}
+            >
               <span className={trackPositionStyles}>{track.position}</span>
               <span className={trackTitleStyles}>{track.title}</span>
               {track.duration && (
@@ -96,6 +101,14 @@ export function AlbumDetailContent(props: IAlbumDetailContentProps) {
       >
         <span className={buttonContentStyles}>
           {isRequesting && <Spinner />}
+          {!isRequesting && (
+            <span
+              data-icon="album"
+              className="material-symbols-outlined text-[#f3ffca]"
+            >
+              album
+            </span>
+          )}
           {buttonText}
         </span>
       </button>

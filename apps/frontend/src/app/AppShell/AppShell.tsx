@@ -38,14 +38,32 @@ export function AppShell(props: IAppShellProps) {
     <div className={rootStyles}>
       {/* Header with title and host mode lock icon */}
       <header className={headerStyles}>
-        <h1 className={titleStyles}>Cue The Music</h1>
+        <h1 className={titleStyles}>
+          <span
+            data-icon="album"
+            className="material-symbols-outlined text-[#f3ffca]"
+          >
+            album
+          </span>
+          Cue The Music
+        </h1>
         <button
-          aria-label={isHostMode ? 'Deactivate host mode' : 'Activate host mode'}
+          aria-label={
+            isHostMode ? 'Deactivate host mode' : 'Activate host mode'
+          }
           className={lockClass}
           onClick={handleLockPress}
           type="button"
         >
-          {isHostMode ? '\u{1F513}' : '\u{1F512}'}
+          {isHostMode ? (
+            <span className="material-symbols-outlined text-[#f3ffca]">
+              lock_open
+            </span>
+          ) : (
+            <span className="material-symbols-outlined text-[#f3ffca]">
+              lock
+            </span>
+          )}
         </button>
       </header>
 
