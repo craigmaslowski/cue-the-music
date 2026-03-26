@@ -2,7 +2,7 @@ import { SearchInput } from '@cue-the-music/core-ui';
 
 import { ChipFilter } from '../ChipFilter';
 import { GenreFilter } from '../GenreFilter';
-import { filtersStyles, rootStyles } from './CollectionSearch-elements';
+import { countStyles, filtersStyles, rootStyles } from './CollectionSearch-elements';
 import type { ICollectionSearchProps } from './CollectionSearch-types';
 import { useCollectionSearch } from './useCollectionSearch';
 
@@ -10,14 +10,20 @@ import { useCollectionSearch } from './useCollectionSearch';
 export function CollectionSearch(props: ICollectionSearchProps) {
   const {
     decades,
+    filteredCount,
     genres,
     onDecadesChange,
     onGenresChange,
     onSearch,
     selectedDecades,
     selectedGenres,
+    totalCount,
   } = props;
-  useCollectionSearch(props);
+  const { hasActiveFilters } = useCollectionSearch(props);
+
+  const countText = hasActiveFilters
+    ? `${filteredCount} of ${totalCount} albums`
+    : `${totalCount} albums`;
 
   return (
     <div className={rootStyles}>
@@ -43,6 +49,10 @@ export function CollectionSearch(props: ICollectionSearchProps) {
           />
         )}
       </div>
+
+      {totalCount > 0 && (
+        <span className={countStyles}>{countText}</span>
+      )}
     </div>
   );
 }

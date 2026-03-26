@@ -22,7 +22,7 @@ export const promoteButtonStyles = css({
   fontWeight: 700,
   gap: '1',
   letterSpacing: 'tight',
-  padding: '1.5 3',
+  padding: '2 4',
   textTransform: 'uppercase',
   transition: 'opacity 0.2s ease',
   _active: {
@@ -45,7 +45,7 @@ export const removeButtonStyles = css({
   fontWeight: 700,
   gap: '1',
   letterSpacing: 'tight',
-  padding: '1.5 3',
+  padding: '2 4',
   textTransform: 'uppercase',
   transition: 'opacity 0.2s ease',
   _active: {

@@ -3,7 +3,8 @@ import {
   useAlbum,
   useRequestAlbum,
 } from '@cue-the-music/data-access-collection';
-import { useCallback, useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { useCallback, useRef, useState } from 'react';
 
 import type { IAlbumDetailOverlayProps } from './AlbumDetailOverlay-types';
 
@@ -23,6 +24,8 @@ export function useAlbumDetailOverlay(
 ): IUseAlbumDetailOverlayReturn {
   const { albumId, onClose } = props;
   const isOpen = albumId !== null;
+  const navigate = useNavigate();
+  const autoCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [alreadyInQueue, setAlreadyInQueue] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
@@ -36,6 +39,10 @@ export function useAlbumDetailOverlay(
     setLimitReached(false);
     setRequestSuccess(false);
     requestMutation.reset();
+    if (autoCloseTimerRef.current) {
+      clearTimeout(autoCloseTimerRef.current);
+      autoCloseTimerRef.current = null;
+    }
   }, [requestMutation]);
 
   function handleClose(): void {
@@ -51,6 +58,11 @@ export function useAlbumDetailOverlay(
       {
         onSuccess: () => {
           setRequestSuccess(true);
+          // Brief delay so user sees "Requested" feedback, then navigate to queue
+          autoCloseTimerRef.current = setTimeout(() => {
+            handleClose();
+            navigate({ to: '/queue' });
+          }, 800);
         },
         onError: (error) => {
           if (error instanceof ApiError) {
