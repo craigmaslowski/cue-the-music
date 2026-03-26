@@ -1,7 +1,5 @@
 import type {
   IAlbum,
-  IAlbumFilterValues,
-  IAlbumFilters,
   IAlbumListResponse,
 } from '@cue-the-music/core-types';
 import {
@@ -16,36 +14,11 @@ import { ApiError, apiFetch } from './api-client';
 
 const COLLECTION_STALE_TIME = 60_000;
 
-/** Build query params string from album filters. */
-function buildFilterParams(filters: IAlbumFilters): string {
-  const params = new URLSearchParams();
-
-  if (filters.search) {
-    params.set('search', filters.search);
-  }
-  if (filters.genres?.length) {
-    for (const genre of filters.genres) {
-      params.append('genre', genre);
-    }
-  }
-  if (filters.decades?.length) {
-    for (const decade of filters.decades) {
-      params.append('decade', decade);
-    }
-  }
-
-  const str = params.toString();
-  return str ? `?${str}` : '';
-}
-
-/** Query options for the album list — reusable for loaders and hooks. */
-export function albumListQueryOptions(filters: IAlbumFilters) {
+/** Query options for the full album list (unfiltered). */
+export function albumListQueryOptions() {
   return queryOptions({
-    queryKey: albumKeys.list(filters),
-    queryFn: () =>
-      apiFetch<IAlbumListResponse>(
-        `/api/albums${buildFilterParams(filters)}`,
-      ),
+    queryKey: albumKeys.lists(),
+    queryFn: () => apiFetch<IAlbumListResponse>('/api/albums'),
     staleTime: COLLECTION_STALE_TIME,
   });
 }
@@ -59,18 +32,9 @@ export function albumDetailQueryOptions(id: number) {
   });
 }
 
-/** Query options for available filter values. */
-export function albumFiltersQueryOptions() {
-  return queryOptions({
-    queryKey: albumKeys.filters(),
-    queryFn: () => apiFetch<IAlbumFilterValues>('/api/album-filters'),
-    staleTime: COLLECTION_STALE_TIME,
-  });
-}
-
-/** Fetch albums with server-side search, genre, and decade filters. */
-export function useAlbums(filters: IAlbumFilters) {
-  return useSuspenseQuery(albumListQueryOptions(filters));
+/** Fetch all albums (unfiltered, single cache entry). */
+export function useAlbums() {
+  return useSuspenseQuery(albumListQueryOptions());
 }
 
 /** Fetch a single album detail with placeholder data from cache. */
@@ -80,7 +44,7 @@ export function useAlbum(id: number) {
   return useSuspenseQuery({
     ...albumDetailQueryOptions(id),
     initialData: () => {
-      // Try to find this album in any cached list query
+      // Try to find this album in the cached list query
       const listQueries = queryClient.getQueriesData<IAlbumListResponse>({
         queryKey: albumKeys.lists(),
       });
@@ -95,11 +59,6 @@ export function useAlbum(id: number) {
       return undefined;
     },
   });
-}
-
-/** Fetch available filter values (genres and decades). */
-export function useAlbumFilters() {
-  return useSuspenseQuery(albumFiltersQueryOptions());
 }
 
 /** Request body for adding an album to the queue. */
