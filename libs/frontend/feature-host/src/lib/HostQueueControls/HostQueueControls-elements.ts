@@ -11,7 +11,8 @@ export const rootStyles = css({
 /** Play/promote button — green accent */
 export const promoteButtonStyles = css({
   alignItems: 'center',
-  background: 'linear-gradient(135deg, token(colors.primary), token(colors.primary.container))',
+  background:
+    'linear-gradient(135deg, token(colors.primary), token(colors.primary.container))',
   borderRadius: 'full',
   borderWidth: '0',
   color: 'primary.onFixed',
@@ -22,7 +23,10 @@ export const promoteButtonStyles = css({
   fontWeight: 700,
   gap: '1',
   letterSpacing: 'tight',
-  padding: '2 4',
+  paddingBottom: '0.25rem',
+  paddingLeft: '0.5rem',
+  paddingRight: '0.5rem',
+  paddingTop: '0.25rem',
   textTransform: 'uppercase',
   transition: 'opacity 0.2s ease',
   _active: {
@@ -45,7 +49,10 @@ export const removeButtonStyles = css({
   fontWeight: 700,
   gap: '1',
   letterSpacing: 'tight',
-  padding: '2 4',
+  paddingBottom: '0.25rem',
+  paddingLeft: '0.5rem',
+  paddingRight: '0.5rem',
+  paddingTop: '0.25rem',
   textTransform: 'uppercase',
   transition: 'opacity 0.2s ease',
   _active: {
