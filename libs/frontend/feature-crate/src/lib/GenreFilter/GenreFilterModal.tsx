@@ -17,17 +17,19 @@ export function GenreFilterModal(props: IGenreFilterModalProps) {
       title="Browse Genres"
     >
       <div className={chipGridStyles}>
-        {genres.map((g) => (
-          <button
-            aria-pressed={isSelected(g.genre)}
-            className={isSelected(g.genre) ? chipSelectedStyles : chipStyles}
-            key={g.genre}
-            onClick={() => onToggle(g.genre)}
-            type="button"
-          >
-            {g.genre}
-          </button>
-        ))}
+        {[...genres]
+          .sort((a, b) => a.genre.localeCompare(b.genre))
+          .map((g) => (
+            <button
+              aria-pressed={isSelected(g.genre)}
+              className={isSelected(g.genre) ? chipSelectedStyles : chipStyles}
+              key={g.genre}
+              onClick={() => onToggle(g.genre)}
+              type="button"
+            >
+              {g.genre} ({g.count})
+            </button>
+          ))}
       </div>
     </Dialog>
   );
