@@ -22,7 +22,7 @@ export const promoteButtonStyles = css({
   fontWeight: 700,
   gap: '1',
   letterSpacing: 'tight',
-  padding: '2 4',
+  padding: '3 5',
   textTransform: 'uppercase',
   transition: 'opacity 0.2s ease',
   _active: {
@@ -45,7 +45,7 @@ export const removeButtonStyles = css({
   fontWeight: 700,
   gap: '1',
   letterSpacing: 'tight',
-  padding: '2 4',
+  padding: '3 5',
   textTransform: 'uppercase',
   transition: 'opacity 0.2s ease',
   _active: {
@@ -64,7 +64,7 @@ export const skipBadgeStyles = css({
   fontSize: 'labelMd',
   fontWeight: 700,
   gap: '1',
-  padding: '1 2.5',
+  padding: '2 3',
 });
 
 /** Prominent skip signal highlight */
