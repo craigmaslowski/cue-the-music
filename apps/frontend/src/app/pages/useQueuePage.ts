@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import {
+  useClearQueue,
   usePromoteToNowPlaying,
   useRemoveQueueItem,
   useTriggerSync,
@@ -8,12 +9,16 @@ import {
 import { useHostStore } from '@cue-the-music/feature-host';
 
 interface IUseQueuePageReturn {
+  /** Handler for clearing the entire queue and now playing */
+  handleClearQueue: () => void;
   /** Handler for promoting a queue item to now playing */
   handlePromote: (queueItemId: number) => void;
   /** Handler for removing a queue item */
   handleRemove: (queueItemId: number) => void;
   /** Handler for triggering Discogs sync */
   handleSync: () => void;
+  /** Whether the clear queue operation is in progress */
+  isClearing: boolean;
   /** Whether host mode is active */
   isHostMode: boolean;
   /** Whether a Discogs sync is in progress */
@@ -34,9 +39,14 @@ export function useQueuePage(): IUseQueuePageReturn {
     token: sessionToken,
   };
 
+  const clearQueueMutation = useClearQueue(mutationOptions);
   const promoteMutation = usePromoteToNowPlaying(mutationOptions);
   const removeMutation = useRemoveQueueItem(mutationOptions);
   const syncMutation = useTriggerSync(mutationOptions);
+
+  const handleClearQueue = useCallback(() => {
+    clearQueueMutation.mutate();
+  }, [clearQueueMutation]);
 
   const handlePromote = useCallback(
     (queueItemId: number) => {
@@ -57,9 +67,11 @@ export function useQueuePage(): IUseQueuePageReturn {
   }, [syncMutation]);
 
   return {
+    handleClearQueue,
     handlePromote,
     handleRemove,
     handleSync,
+    isClearing: clearQueueMutation.isPending,
     isHostMode,
     isSyncing: syncMutation.isPending,
   };

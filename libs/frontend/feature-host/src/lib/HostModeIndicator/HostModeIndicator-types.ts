@@ -1,15 +1,21 @@
 export interface IHostModeIndicatorProps {
-  /** Callback to trigger Discogs sync */
-  onSync: () => void;
+  /** Whether clear queue is currently in progress */
+  isClearing: boolean;
   /** Whether sync is currently in progress */
   isSyncing: boolean;
+  /** Callback to clear all queue items and now playing */
+  onClearQueue: () => void;
+  /** Callback to trigger Discogs sync */
+  onSync: () => void;
 }
 
 export interface IUseHostModeIndicatorReturn {
-  /** Whether host mode is active */
-  isHostMode: boolean;
-  /** Handler for sync button press */
-  handleSync: () => void;
+  /** Handler for clearing the queue */
+  handleClearQueue: () => void;
   /** Handler for deactivating host mode */
   handleDeactivate: () => void;
+  /** Handler for sync button press */
+  handleSync: () => void;
+  /** Whether host mode is active */
+  isHostMode: boolean;
 }

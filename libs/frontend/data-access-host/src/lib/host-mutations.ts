@@ -78,6 +78,24 @@ export function useRemoveQueueItem(options: IHostMutationOptions) {
   });
 }
 
+/** Mutation hook for DELETE /api/host/queue — clears all queue items and now playing. */
+export function useClearQueue(options: IHostMutationOptions) {
+  const queryClient = useQueryClient();
+
+  return useMutation<unknown, ApiError, void>({
+    mutationFn: () =>
+      hostFetch(
+        '/api/host/queue',
+        options.token,
+        { method: 'DELETE' },
+        options.onUnauthorized,
+      ),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queueKeys.all });
+    },
+  });
+}
+
 /** Mutation hook for POST /api/host/sync — triggers Discogs sync. */
 export function useTriggerSync(options: IHostMutationOptions) {
   const queryClient = useQueryClient();
