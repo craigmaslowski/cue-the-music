@@ -5,7 +5,7 @@ import type {
   IUseGenreFilterReturn,
 } from './GenreFilter-types';
 
-const TOP_GENRE_COUNT = 5;
+const TOP_GENRE_COUNT = 3;
 
 /** Encapsulates GenreFilter state and toggle logic. */
 export function useGenreFilter(

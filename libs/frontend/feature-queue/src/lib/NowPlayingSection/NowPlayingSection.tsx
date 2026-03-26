@@ -1,7 +1,6 @@
 import {
   artistStyles,
   badgeStyles,
-  contentStyles,
   coverArtStyles,
   emptyStyles,
   infoStyles,
@@ -33,20 +32,19 @@ export function NowPlayingSection(props: INowPlayingSectionProps) {
   return (
     <div className={rootStyles}>
       <span className={badgeStyles}>Now Playing</span>
-      <div className={contentStyles}>
-        {album.cover_art_thumbnail_url ? (
-          <img
-            alt={`${album.title} by ${album.artist}`}
-            className={coverArtStyles}
-            src={album.cover_art_thumbnail_url}
-          />
-        ) : (
-          <div className={coverArtStyles} />
-        )}
-        <div className={infoStyles}>
-          <h2 className={titleStyles}>{album.title}</h2>
-          <span className={artistStyles}>{album.artist}</span>
-        </div>
+
+      {album.cover_art_thumbnail_url ? (
+        <img
+          alt={`${album.title} by ${album.artist}`}
+          className={coverArtStyles}
+          src={album.cover_art_thumbnail_url}
+        />
+      ) : (
+        <div className={coverArtStyles} />
+      )}
+      <div className={infoStyles}>
+        <h2 className={titleStyles}>{album.title}</h2>
+        <span className={artistStyles}>{album.artist}</span>
       </div>
     </div>
   );

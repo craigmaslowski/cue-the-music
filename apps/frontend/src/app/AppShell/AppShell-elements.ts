@@ -68,20 +68,26 @@ export const tabRootStyles = css({
 
 /** Individual tab trigger in the bottom nav */
 export const tabTriggerStyles = css({
+  alignItems: 'center',
   backgroundColor: 'transparent',
   borderWidth: '0',
   color: 'onSurface.variant',
   cursor: 'pointer',
+  display: 'flex',
   fontFamily: 'heading',
-  fontSize: 'labelMd',
+  fontSize: 'bodyLg',
   fontWeight: 600,
+  gap: 1,
+  justifyContent: 'center',
   letterSpacing: 'tight',
+  margin: '0 auto',
   padding: '3',
   textTransform: 'uppercase',
   transition: 'color 0.2s ease',
   width: '50%',
   _selected: {
-    color: 'primary',
+    backgroundColor: 'surface.container',
+    color: 'primary.container',
   },
 });
 

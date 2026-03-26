@@ -79,9 +79,21 @@ export function AppShell(props: IAppShellProps) {
         {/* Bottom tab bar */}
         <Tabs.List className={tabListStyles}>
           <Tabs.Trigger className={tabTriggerStyles} value="crate">
+            <span
+              data-icon="album"
+              className="material-symbols-outlined text-[#f3ffca]"
+            >
+              search
+            </span>
             The Crate
           </Tabs.Trigger>
           <Tabs.Trigger className={tabTriggerStyles} value="queue">
+            <span
+              data-icon="album"
+              className="material-symbols-outlined text-[#f3ffca]"
+            >
+              format_list_bulleted
+            </span>
             Queue
           </Tabs.Trigger>
         </Tabs.List>

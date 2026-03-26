@@ -22,6 +22,8 @@ export const gridHeadingAccentStyles = css({
   '--tw-bg-opacity': 1,
   backgroundColor: 'rgb(243 255 202 / var(--tw-bg-opacity, 1))',
   borderRadius: '0.75rem',
-  width: '0.5rem',
+  fontFamily: 'heading',
   height: '2rem',
+  letterSpacing: 'tighter',
+  width: '0.5rem',
 });

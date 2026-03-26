@@ -2,10 +2,12 @@ import { css } from '@styled-system/css';
 
 /** Root container for the Now Playing section */
 export const rootStyles = css({
+  alignItems: 'center',
   display: 'flex',
   flexDirection: 'column',
   gap: '3',
-  padding: '4',
+  margin: '0 auto',
+  padding: '2',
 });
 
 /** "NOW PLAYING" badge */
@@ -29,7 +31,7 @@ export const coverArtStyles = css({
   aspectRatio: '1',
   backgroundColor: 'surface.container',
   borderRadius: 'xl',
-  boxShadow: 'neonPink',
+  boxShadow: 'neonCyan',
   display: 'block',
   height: 'auto',
   maxWidth: '16rem',
@@ -37,15 +39,9 @@ export const coverArtStyles = css({
   width: '100%',
 });
 
-/** Content layout: art + info */
-export const contentStyles = css({
-  alignItems: 'flex-start',
-  display: 'flex',
-  gap: '4',
-});
-
 /** Text info beside the cover art */
 export const infoStyles = css({
+  alignItems: 'center',
   display: 'flex',
   flex: 1,
   flexDirection: 'column',

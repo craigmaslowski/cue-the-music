@@ -32,7 +32,7 @@ export const triggerStyles = css({
   color: 'onSurface.variant',
   cursor: 'pointer',
   fontFamily: 'heading',
-  fontSize: 'bodyXl',
+  fontSize: 'body2Xl',
   fontWeight: 600,
   letterSpacing: 'tight',
   padding: '3',
