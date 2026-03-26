@@ -24,7 +24,7 @@ No user accounts. No login. Identity is tracked by IP address only.
 - First-come-first-served ordering — votes do not reorder the queue
 - Down-vote count is surfaced prominently to the host as a "skip signal"
 - Each album can only appear in the queue once at a time
-- Guests can only have one active request at a time
+- Guests can have up to three active requests at a time
 
 ### Host Mode
 
@@ -44,7 +44,7 @@ No user accounts. No login. Identity is tracked by IP address only.
 - Sync is manual and on-demand, triggered from host mode only
 - Sync fetches the authenticated user's Discogs collection and upserts records into the local database
 - Data stored locally: artist, title, year, label, genre/style tags, cover art URL, Discogs release ID
-- Tracklist is displayed in the UI but is not stored locally — it is fetched from the Discogs API at display time only
+- Tracklist is displayed in the UI and cached locally after first fetch from the Discogs API
 - Cover art is referenced by URL (not downloaded/cached locally, unless implementation finds this necessary for performance)
 
 ---

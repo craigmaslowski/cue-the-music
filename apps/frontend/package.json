@@ -1,0 +1,8 @@
+{
+  "name": "@cue-the-music/frontend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "prepare": "panda codegen"
+  }
+}

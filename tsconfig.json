@@ -1,0 +1,43 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/frontend-e2e"
+    },
+    {
+      "path": "./apps/frontend"
+    },
+    {
+      "path": "./libs/frontend/core-types"
+    },
+    {
+      "path": "./libs/frontend/core-ui"
+    },
+    {
+      "path": "./libs/frontend/core-theme"
+    },
+    {
+      "path": "./libs/frontend/data-access-collection"
+    },
+    {
+      "path": "./libs/frontend/feature-crate"
+    },
+    {
+      "path": "./libs/frontend/data-access-host"
+    },
+    {
+      "path": "./libs/frontend/feature-host"
+    },
+    {
+      "path": "./libs/frontend/data-access-queue"
+    },
+    {
+      "path": "./libs/frontend/feature-queue"
+    },
+    {
+      "path": "./libs/frontend/feature-sse"
+    }
+  ]
+}
