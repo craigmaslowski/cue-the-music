@@ -1,5 +1,4 @@
-import { useCallback, useState } from 'react';
-
+import { useCrateStore } from '../store';
 import type {
   ICollectionSearchProps,
   IUseCollectionSearchReturn,
@@ -7,17 +6,10 @@ import type {
 
 /** Encapsulates CollectionSearch state derivation. */
 export function useCollectionSearch(
-  props: ICollectionSearchProps
+  _props: ICollectionSearchProps,
 ): IUseCollectionSearchReturn {
-  const { selectedDecades, selectedGenres } = props;
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const isFiltersOpen = useCrateStore((s) => s.isFiltersOpen);
+  const toggleFilters = useCrateStore((s) => s.toggleFilters);
 
-  const hasActiveFilters =
-    selectedGenres.length > 0 || selectedDecades.length > 0;
-
-  const handleToggleFilters = useCallback(() => {
-    setIsFiltersOpen((prev) => !prev);
-  }, []);
-
-  return { hasActiveFilters, handleToggleFilters, isFiltersOpen };
+  return { handleToggleFilters: toggleFilters, isFiltersOpen };
 }

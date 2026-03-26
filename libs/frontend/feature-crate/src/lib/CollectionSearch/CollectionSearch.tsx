@@ -21,6 +21,7 @@ export function CollectionSearch(props: ICollectionSearchProps) {
     onDecadesChange,
     onGenresChange,
     onSearch,
+    searchValue,
     selectedDecades,
     selectedGenres,
     totalCount,
@@ -38,6 +39,7 @@ export function CollectionSearch(props: ICollectionSearchProps) {
       <SearchInput
         onSearch={onSearch}
         placeholder="Search artists and albums..."
+        value={searchValue}
       />
       {isFiltersOpen && (
         <div className={filtersStyles}>

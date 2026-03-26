@@ -13,6 +13,8 @@ export interface ICollectionSearchProps {
   onGenresChange: (genres: string[]) => void;
   /** Callback when search text changes (debounced) */
   onSearch: (value: string) => void;
+  /** Current search value for controlled input */
+  searchValue: string;
   /** Currently selected decade values */
   selectedDecades: string[];
   /** Currently selected genre values */
@@ -22,8 +24,6 @@ export interface ICollectionSearchProps {
 }
 
 export interface IUseCollectionSearchReturn {
-  /** Whether any filters are active */
-  hasActiveFilters: boolean;
   /** Handler to toggle filter section visibility */
   handleToggleFilters: () => void;
   /** Whether the filter section is expanded */
