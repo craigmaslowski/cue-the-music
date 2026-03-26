@@ -14,7 +14,7 @@ export const buttonStyles = css({
   fontWeight: 700,
   gap: '1.5',
   letterSpacing: 'tight',
-  padding: '3 5',
+  padding: '2 4',
   textTransform: 'uppercase',
   transition: 'opacity 0.2s ease',
   _disabled: {

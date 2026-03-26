@@ -50,7 +50,7 @@ export const deactivateButtonStyles = css({
   cursor: 'pointer',
   fontFamily: 'body',
   fontSize: 'labelMd',
-  padding: '3 5',
+  padding: '2 3',
   textDecoration: 'underline',
   textDecorationColor: 'onSurface.variant',
   textUnderlineOffset: '2px',
