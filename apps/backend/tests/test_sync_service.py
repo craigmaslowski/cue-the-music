@@ -14,6 +14,7 @@ from cue_the_music.integrations.discogs_client import (
     DiscogsCollectionRelease,
     DiscogsCollectionResponse,
     DiscogsLabel,
+    DiscogsMasterRelease,
     DiscogsPagination,
 )
 from cue_the_music.models.album import Album
@@ -46,6 +47,7 @@ def _make_release(
     artist: str = "Miles Davis",
     title: str = "Kind of Blue",
     year: int = 1959,
+    master_id: int = 0,
 ) -> DiscogsCollectionRelease:
     """Build a single DiscogsCollectionRelease."""
     return DiscogsCollectionRelease(
@@ -55,11 +57,12 @@ def _make_release(
             genres=["Jazz"],
             id=release_id,
             labels=[DiscogsLabel(name="Columbia")],
+            master_id=master_id,
             styles=["Modal"],
             thumb=f"https://img.discogs.com/{release_id}_thumb.jpg",
             title=title,
             year=year,
-        )
+        ),
     )
 
 
@@ -237,3 +240,181 @@ class TestSyncServiceSyncCollection:
             )
             with pytest.raises(DiscogsSyncError):
                 await service.sync_collection()
+
+
+@pytest.mark.asyncio
+class TestMasterReleaseYearResolution:
+    """Tests for original release year resolution via master release."""
+
+    async def test_uses_master_year_over_release_year(
+        self, async_engine, async_session: AsyncSession
+    ) -> None:
+        """When master_id is set, the master's year is used instead of the pressing year."""
+        mock_client = AsyncMock()
+        mock_client.get_collection_page.return_value = _make_collection_response(
+            releases=[
+                _make_release(
+                    12345, "The Beatles", "Abbey Road", year=2020, master_id=5678
+                ),
+            ],
+        )
+        mock_client.get_master_release.return_value = DiscogsMasterRelease(
+            id=5678, year=1969
+        )
+
+        test_session_factory = async_sessionmaker(
+            async_engine, expire_on_commit=False
+        )
+        with patch(
+            "cue_the_music.services.sync_service.async_session_factory",
+            test_session_factory,
+        ):
+            service = SyncService(
+                discogs_client=mock_client, settings=_make_settings()
+            )
+            await service.sync_collection()
+
+        async with test_session_factory() as session:
+            albums = (await session.execute(select(Album))).scalars().all()
+            assert len(albums) == 1
+            assert albums[0].year == 1969
+            assert albums[0].discogs_master_id == 5678
+
+    async def test_falls_back_to_release_year_without_master(
+        self, async_engine, async_session: AsyncSession
+    ) -> None:
+        """When master_id is 0, the release's own year is used."""
+        mock_client = AsyncMock()
+        mock_client.get_collection_page.return_value = _make_collection_response(
+            releases=[
+                _make_release(12345, "Artist", "Album", year=1985, master_id=0),
+            ],
+        )
+
+        test_session_factory = async_sessionmaker(
+            async_engine, expire_on_commit=False
+        )
+        with patch(
+            "cue_the_music.services.sync_service.async_session_factory",
+            test_session_factory,
+        ):
+            service = SyncService(
+                discogs_client=mock_client, settings=_make_settings()
+            )
+            await service.sync_collection()
+
+        async with test_session_factory() as session:
+            albums = (await session.execute(select(Album))).scalars().all()
+            assert len(albums) == 1
+            assert albums[0].year == 1985
+            assert albums[0].discogs_master_id is None
+        mock_client.get_master_release.assert_not_called()
+
+    async def test_falls_back_on_master_fetch_failure(
+        self, async_engine, async_session: AsyncSession
+    ) -> None:
+        """When master fetch fails, falls back to release year without aborting sync."""
+        mock_client = AsyncMock()
+        mock_client.get_collection_page.return_value = _make_collection_response(
+            releases=[
+                _make_release(
+                    12345, "Artist", "Album", year=2020, master_id=9999
+                ),
+            ],
+        )
+        mock_client.get_master_release.side_effect = RuntimeError("404 Not Found")
+
+        test_session_factory = async_sessionmaker(
+            async_engine, expire_on_commit=False
+        )
+        with patch(
+            "cue_the_music.services.sync_service.async_session_factory",
+            test_session_factory,
+        ):
+            service = SyncService(
+                discogs_client=mock_client, settings=_make_settings()
+            )
+            result = await service.sync_collection()
+
+        assert result.albums_synced == 1
+        async with test_session_factory() as session:
+            albums = (await session.execute(select(Album))).scalars().all()
+            assert len(albums) == 1
+            assert albums[0].year == 2020  # falls back to release year
+
+    async def test_skips_master_fetch_when_already_resolved(
+        self, async_engine, async_session: AsyncSession
+    ) -> None:
+        """Re-sync skips master fetch when master_id matches and year is set."""
+        test_session_factory = async_sessionmaker(
+            async_engine, expire_on_commit=False
+        )
+        # Seed album with resolved master year
+        async with test_session_factory() as session, session.begin():
+            session.add(
+                Album(
+                    artist="The Beatles",
+                    discogs_master_id=5678,
+                    discogs_release_id="12345",
+                    genre_tags=["Rock"],
+                    title="Abbey Road",
+                    year=1969,
+                )
+            )
+
+        mock_client = AsyncMock()
+        mock_client.get_collection_page.return_value = _make_collection_response(
+            releases=[
+                _make_release(
+                    12345, "The Beatles", "Abbey Road", year=2020, master_id=5678
+                ),
+            ],
+        )
+
+        with patch(
+            "cue_the_music.services.sync_service.async_session_factory",
+            test_session_factory,
+        ):
+            service = SyncService(
+                discogs_client=mock_client, settings=_make_settings()
+            )
+            await service.sync_collection()
+
+        # Master fetch should NOT have been called — year already resolved
+        mock_client.get_master_release.assert_not_called()
+
+        async with test_session_factory() as session:
+            albums = (await session.execute(select(Album))).scalars().all()
+            assert len(albums) == 1
+            assert albums[0].year == 1969  # preserved, not overwritten with 2020
+
+    async def test_year_none_when_both_sources_zero(
+        self, async_engine, async_session: AsyncSession
+    ) -> None:
+        """When both master year and release year are 0, year is None."""
+        mock_client = AsyncMock()
+        mock_client.get_collection_page.return_value = _make_collection_response(
+            releases=[
+                _make_release(12345, "Unknown", "Unknown Album", year=0, master_id=999),
+            ],
+        )
+        mock_client.get_master_release.return_value = DiscogsMasterRelease(
+            id=999, year=0
+        )
+
+        test_session_factory = async_sessionmaker(
+            async_engine, expire_on_commit=False
+        )
+        with patch(
+            "cue_the_music.services.sync_service.async_session_factory",
+            test_session_factory,
+        ):
+            service = SyncService(
+                discogs_client=mock_client, settings=_make_settings()
+            )
+            await service.sync_collection()
+
+        async with test_session_factory() as session:
+            albums = (await session.execute(select(Album))).scalars().all()
+            assert len(albums) == 1
+            assert albums[0].year is None

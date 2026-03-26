@@ -100,18 +100,90 @@ class SyncService:
     ) -> int:
         """Upsert a page of releases into the albums table.
 
-        Uses a dedicated session per page for independent commit boundaries.
-        Returns the number of albums processed on this page.
+        Resolves master release years outside the DB transaction to avoid
+        holding the write lock during rate-limited API calls. Then upserts
+        all albums in a single per-page transaction.
         """
+        # Phase 1: resolve master years (HTTP calls, no DB lock)
+        resolved_years = await self._resolve_years_for_page(releases)
+
+        # Phase 2: upsert albums (DB writes, no HTTP calls)
         async with async_session_factory() as session, session.begin():
             for release in releases:
-                await self._upsert_album(session, release)
+                discogs_id = str(release.basic_information.id)
+                await self._upsert_album(session, release, resolved_years.get(discogs_id))
         return len(releases)
+
+    async def _resolve_years_for_page(
+        self,
+        releases: list[DiscogsCollectionRelease],
+    ) -> dict[str, int | None]:
+        """Resolve original release years for a page of releases.
+
+        Checks the DB for already-resolved master years to skip redundant
+        API calls. Returns a mapping of discogs_release_id -> resolved year.
+        """
+        resolved: dict[str, int | None] = {}
+
+        # Check which albums already have resolved master years in the DB
+        already_resolved: dict[str, tuple[int | None, int | None]] = {}
+        async with async_session_factory() as session:
+            for release in releases:
+                discogs_id = str(release.basic_information.id)
+                stmt = select(Album).where(Album.discogs_release_id == discogs_id)
+                result = await session.execute(stmt)
+                existing = result.scalar_one_or_none()
+                if existing:
+                    already_resolved[discogs_id] = (
+                        existing.discogs_master_id,
+                        existing.year,
+                    )
+
+        for release in releases:
+            info = release.basic_information
+            discogs_id = str(info.id)
+            master_id = info.master_id
+
+            # Skip master fetch if year was already resolved from this master
+            cached = already_resolved.get(discogs_id)
+            if cached and cached[0] == master_id and cached[1]:
+                resolved[discogs_id] = cached[1]
+            else:
+                resolved[discogs_id] = await self._resolve_year(
+                    master_id, info.year
+                )
+
+        return resolved
+
+    async def _resolve_year(
+        self,
+        master_id: int,
+        release_year: int,
+    ) -> int | None:
+        """Resolve original release year from master, falling back to release year.
+
+        If master_id is valid (> 0), fetches the master release and uses its
+        year. Falls back to release_year on failure or when no master exists.
+        Returns None when both sources report 0 (unknown).
+        """
+        if master_id > 0:
+            try:
+                master = await self._discogs_client.get_master_release(master_id)
+                if master.year > 0:
+                    return master.year
+            except Exception:
+                logger.warning(
+                    "Failed to fetch master %d, using release year",
+                    master_id,
+                    exc_info=True,
+                )
+        return release_year if release_year > 0 else None
 
     async def _upsert_album(
         self,
         session: AsyncSession,
         release: DiscogsCollectionRelease,
+        resolved_year: int | None,
     ) -> None:
         """Insert or update a single album from a Discogs collection release.
 
@@ -121,6 +193,7 @@ class SyncService:
         """
         info = release.basic_information
         discogs_id = str(info.id)
+        master_id = info.master_id
 
         # Look up existing album by Discogs release ID
         stmt = select(Album).where(Album.discogs_release_id == discogs_id)
@@ -138,24 +211,26 @@ class SyncService:
             existing.artist = artist_name
             existing.cover_art_thumbnail_url = info.thumb or None
             existing.cover_art_url = info.cover_image or None
+            existing.discogs_master_id = master_id if master_id > 0 else None
             existing.genre_tags = info.genres
             existing.label = label_name
             existing.style_tags = info.styles
             existing.title = info.title
-            existing.year = info.year if info.year else None
+            existing.year = resolved_year
         else:
             # Insert new album
             album = Album(
                 artist=artist_name,
                 cover_art_thumbnail_url=info.thumb or None,
                 cover_art_url=info.cover_image or None,
+                discogs_master_id=master_id if master_id > 0 else None,
                 discogs_release_id=discogs_id,
                 genre_tags=info.genres,
                 label=label_name,
                 style_tags=info.styles,
                 title=info.title,
                 tracklist=None,
-                year=info.year if info.year else None,
+                year=resolved_year,
             )
             session.add(album)
 

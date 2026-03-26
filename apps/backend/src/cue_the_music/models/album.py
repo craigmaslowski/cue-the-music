@@ -22,6 +22,7 @@ class Album(TimestampMixin, Base):
     artist: Mapped[str] = mapped_column(String(500))
     cover_art_thumbnail_url: Mapped[str | None] = mapped_column(Text)
     cover_art_url: Mapped[str | None] = mapped_column(Text)
+    discogs_master_id: Mapped[int | None] = mapped_column(Integer)
     discogs_release_id: Mapped[str] = mapped_column(
         String(50), unique=True, index=True
     )

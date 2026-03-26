@@ -15,6 +15,7 @@ from cue_the_music.integrations.discogs_client import (
     DiscogsCollectionRelease,
     DiscogsCollectionResponse,
     DiscogsLabel,
+    DiscogsMasterRelease,
     DiscogsPagination,
     get_discogs_client,
 )

@@ -25,7 +25,8 @@ def _get_rate_limiter() -> AsyncLimiter:
     """Return the shared rate limiter, creating it on first use."""
     global _rate_limiter  # noqa: PLW0603
     if _rate_limiter is None:
-        _rate_limiter = AsyncLimiter(max_rate=50, time_period=60)
+        # 1 request per 1.2s ≈ 50 req/min, no burst — Discogs rejects bursts
+        _rate_limiter = AsyncLimiter(max_rate=1, time_period=1.2)
     return _rate_limiter
 
 _USER_AGENT = "CueTheMusic/1.0"
@@ -61,6 +62,7 @@ class DiscogsBasicInformation(BaseModel):
     genres: list[str] = []
     id: int
     labels: list[DiscogsLabel] = []
+    master_id: int = 0
     styles: list[str] = []
     thumb: str = ""
     title: str
@@ -114,6 +116,15 @@ class DiscogsReleaseDetail(BaseModel):
     tracklist: list[DiscogsTrack] = []
 
 
+class DiscogsMasterRelease(BaseModel):
+    """Relevant fields from the Discogs master release endpoint."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    id: int
+    year: int = 0
+
+
 # --- Client ---
 
 
@@ -161,6 +172,28 @@ class DiscogsClient:
                 return DiscogsCollectionResponse.model_validate(
                     response.json()
                 )
+
+    async def get_master_release(
+        self, master_id: int
+    ) -> DiscogsMasterRelease:
+        """Fetch a master release to obtain the original release year.
+
+        Args:
+            master_id: Discogs master release ID.
+
+        Returns:
+            Validated master release with the original year.
+        """
+        async with _get_rate_limiter():
+            url = f"{_BASE_URL}/masters/{master_id}"
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    url,
+                    headers=self._headers,
+                    timeout=30.0,
+                )
+                response.raise_for_status()
+                return DiscogsMasterRelease.model_validate(response.json())
 
     async def get_release_detail(
         self, release_id: int
