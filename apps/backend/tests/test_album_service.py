@@ -39,31 +39,10 @@ class TestAlbumServiceGetAlbums:
         mock_repo.get_all.return_value = [_make_mock_album()]
         service = AlbumService(discogs_client=None, repository=mock_repo)
 
-        result = await service.get_albums(search="test", genres=["Rock"])
+        result = await service.get_albums()
 
-        mock_repo.get_all.assert_called_once_with(
-            decades=None,
-            genres=["Rock"],
-            search="test",
-        )
+        mock_repo.get_all.assert_called_once()
         assert len(result) == 1
-
-    async def test_passes_all_filters(self) -> None:
-        mock_repo = AsyncMock()
-        mock_repo.get_all.return_value = []
-        service = AlbumService(discogs_client=None, repository=mock_repo)
-
-        await service.get_albums(
-            decades=[1970],
-            genres=["Jazz"],
-            search="miles",
-        )
-
-        mock_repo.get_all.assert_called_once_with(
-            decades=[1970],
-            genres=["Jazz"],
-            search="miles",
-        )
 
 
 @pytest.mark.asyncio
@@ -89,22 +68,6 @@ class TestAlbumServiceGetAlbumDetail:
             await service.get_album_detail(999)
 
         assert exc_info.value.album_id == 999
-
-
-@pytest.mark.asyncio
-class TestAlbumServiceGetAvailableFilters:
-    """Tests for AlbumService.get_available_filters()."""
-
-    async def test_delegates_to_repository(self) -> None:
-        mock_repo = AsyncMock()
-        expected = {"decades": [1970, 1980], "genres": ["Jazz", "Rock"]}
-        mock_repo.get_filters.return_value = expected
-        service = AlbumService(discogs_client=None, repository=mock_repo)
-
-        result = await service.get_available_filters()
-
-        assert result == expected
-        mock_repo.get_filters.assert_called_once()
 
 
 @pytest.mark.asyncio

@@ -57,42 +57,6 @@ class TestListAlbumsEndpoint:
         assert data["count"] == 2
         assert len(data["albums"]) == 2
 
-    async def test_search_filters_results(
-        self, client: AsyncClient, async_engine
-    ) -> None:
-        await _seed_via_session(async_engine, SAMPLE_ALBUMS)
-
-        response = await client.get("/api/albums", params={"search": "miles"})
-
-        assert response.status_code == 200
-        data = response.json()
-        assert data["count"] == 1
-        assert data["albums"][0]["artist"] == "Miles Davis"
-
-    async def test_genre_filter(
-        self, client: AsyncClient, async_engine
-    ) -> None:
-        await _seed_via_session(async_engine, SAMPLE_ALBUMS)
-
-        response = await client.get("/api/albums", params={"genre": "Rock"})
-
-        assert response.status_code == 200
-        data = response.json()
-        assert data["count"] == 1
-        assert data["albums"][0]["artist"] == "The Clash"
-
-    async def test_decade_filter(
-        self, client: AsyncClient, async_engine
-    ) -> None:
-        await _seed_via_session(async_engine, SAMPLE_ALBUMS)
-
-        response = await client.get("/api/albums", params={"decade": 1950})
-
-        assert response.status_code == 200
-        data = response.json()
-        assert data["count"] == 1
-        assert data["albums"][0]["title"] == "Kind of Blue"
-
     async def test_empty_collection(self, client: AsyncClient) -> None:
         response = await client.get("/api/albums")
 
@@ -126,40 +90,3 @@ class TestGetAlbumEndpoint:
         assert response.status_code == 404
         data = response.json()
         assert data["detail"] == "Album not found."
-
-
-@pytest.mark.asyncio
-class TestAlbumFiltersEndpoint:
-    """Tests for GET /api/album-filters."""
-
-    async def test_returns_genres_and_decades(
-        self, client: AsyncClient, async_engine
-    ) -> None:
-        await _seed_via_session(async_engine, SAMPLE_ALBUMS)
-
-        response = await client.get("/api/album-filters")
-
-        assert response.status_code == 200
-        data = response.json()
-        genre_names = [g["genre"] for g in data["genres"]]
-        assert "Jazz" in genre_names
-        assert "Rock" in genre_names
-        # Each genre should have a count
-        for g in data["genres"]:
-            assert "count" in g
-            assert g["count"] > 0
-        # Sorted by count descending
-        counts = [g["count"] for g in data["genres"]]
-        assert counts == sorted(counts, reverse=True)
-        assert 1950 in data["decades"]
-        assert 1970 in data["decades"]
-
-    async def test_empty_collection_returns_empty_filters(
-        self, client: AsyncClient
-    ) -> None:
-        response = await client.get("/api/album-filters")
-
-        assert response.status_code == 200
-        data = response.json()
-        assert data["genres"] == []
-        assert data["decades"] == []

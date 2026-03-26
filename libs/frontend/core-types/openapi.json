@@ -5,92 +5,14 @@
     "version": "0.1.0"
   },
   "paths": {
-    "/api/album-filters": {
-      "get": {
-        "tags": [
-          "albums"
-        ],
-        "summary": "Get Album Filters",
-        "description": "Return available genre and decade filter values for the collection.",
-        "operationId": "get_album_filters_api_album_filters_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlbumFilterGetResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/albums": {
       "get": {
         "tags": [
           "albums"
         ],
         "summary": "List Albums",
-        "description": "List albums with optional search, genre, and decade filters.",
+        "description": "List all albums in the collection.",
         "operationId": "list_albums_api_albums_get",
-        "parameters": [
-          {
-            "name": "decade",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
-                  }
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Decade"
-            }
-          },
-          {
-            "name": "genre",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Genre"
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Search"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -98,16 +20,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AlbumListResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -597,31 +509,6 @@
   },
   "components": {
     "schemas": {
-      "AlbumFilterGetResponse": {
-        "properties": {
-          "decades": {
-            "items": {
-              "type": "integer"
-            },
-            "type": "array",
-            "title": "Decades"
-          },
-          "genres": {
-            "items": {
-              "$ref": "#/components/schemas/GenreCount"
-            },
-            "type": "array",
-            "title": "Genres"
-          }
-        },
-        "type": "object",
-        "required": [
-          "decades",
-          "genres"
-        ],
-        "title": "AlbumFilterGetResponse",
-        "description": "Response schema for available filter values (genres and decades)."
-      },
       "AlbumGetResponse": {
         "properties": {
           "artist": {
@@ -847,25 +734,6 @@
         ],
         "title": "CollectionSyncTriggerResponse",
         "description": "Response schema for triggering a collection sync."
-      },
-      "GenreCount": {
-        "properties": {
-          "genre": {
-            "type": "string",
-            "title": "Genre"
-          },
-          "count": {
-            "type": "integer",
-            "title": "Count"
-          }
-        },
-        "type": "object",
-        "required": [
-          "genre",
-          "count"
-        ],
-        "title": "GenreCount",
-        "description": "A genre tag paired with its album count."
       },
       "HTTPValidationError": {
         "properties": {
