@@ -4,26 +4,6 @@
  */
 
 export interface paths {
-    "/api/album-filters": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Album Filters
-         * @description Return available genre and decade filter values for the collection.
-         */
-        get: operations["get_album_filters_api_album_filters_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/albums": {
         parameters: {
             query?: never;
@@ -33,7 +13,7 @@ export interface paths {
         };
         /**
          * List Albums
-         * @description List albums with optional search, genre, and decade filters.
+         * @description List all albums in the collection.
          */
         get: operations["list_albums_api_albums_get"];
         put?: never;
@@ -251,16 +231,6 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /**
-         * AlbumFilterGetResponse
-         * @description Response schema for available filter values (genres and decades).
-         */
-        AlbumFilterGetResponse: {
-            /** Decades */
-            decades: number[];
-            /** Genres */
-            genres: components["schemas"]["GenreCount"][];
-        };
-        /**
          * AlbumGetResponse
          * @description Response schema for a single album with all fields.
          */
@@ -335,16 +305,6 @@ export interface components {
             albums_synced: number;
             /** Status */
             status: string;
-        };
-        /**
-         * GenreCount
-         * @description A genre tag paired with its album count.
-         */
-        GenreCount: {
-            /** Genre */
-            genre: string;
-            /** Count */
-            count: number;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -468,7 +428,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    get_album_filters_api_album_filters_get: {
+    list_albums_api_albums_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -483,40 +443,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AlbumFilterGetResponse"];
-                };
-            };
-        };
-    };
-    list_albums_api_albums_get: {
-        parameters: {
-            query?: {
-                decade?: number[] | null;
-                genre?: string[] | null;
-                search?: string | null;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
                     "application/json": components["schemas"]["AlbumListResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

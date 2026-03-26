@@ -1,7 +1,4 @@
-import {
-  albumFiltersQueryOptions,
-  albumListQueryOptions,
-} from '@cue-the-music/data-access-collection';
+import { albumListQueryOptions } from '@cue-the-music/data-access-collection';
 import { createFileRoute } from '@tanstack/react-router';
 
 import { CratePage } from '../app/pages/CratePage';
@@ -12,10 +9,7 @@ export const Route = createFileRoute('/crate')({
   errorComponent: CrateErrorComponent,
   pendingComponent: CratePendingComponent,
   loader: async ({ context }) => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(albumListQueryOptions({})),
-      context.queryClient.ensureQueryData(albumFiltersQueryOptions()),
-    ]);
+    await context.queryClient.ensureQueryData(albumListQueryOptions());
   },
 });
 

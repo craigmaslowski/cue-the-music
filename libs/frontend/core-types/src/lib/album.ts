@@ -8,16 +8,22 @@ import type { components } from './generated-api';
 /** Album data as returned by the backend API. */
 export type IAlbum = components['schemas']['AlbumGetResponse'];
 
-/** Available filter values returned by the album-filters endpoint. */
-export type IAlbumFilterValues = components['schemas']['AlbumFilterGetResponse'];
-
 /** Paginated album list response from the API. */
 export type IAlbumListResponse = components['schemas']['AlbumListResponse'];
 
-/** A genre tag paired with its album count. */
-export type IGenreCount = components['schemas']['GenreCount'];
+/** A genre tag paired with its album count (client-side derived). */
+export interface IGenreCount {
+  count: number;
+  genre: string;
+}
 
-/** Filters applied when fetching the album collection (client-side type). */
+/** Available filter values derived client-side from the full album set. */
+export interface IAlbumFilterValues {
+  decades: number[];
+  genres: IGenreCount[];
+}
+
+/** Filters applied when filtering the album collection (client-side). */
 export interface IAlbumFilters {
   decades?: string[];
   genres?: string[];

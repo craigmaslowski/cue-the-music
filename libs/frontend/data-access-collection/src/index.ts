@@ -1,10 +1,9 @@
+export { deriveFilterValues, filterAlbums } from './lib/album-filters';
 export { albumKeys } from './lib/album-keys';
 export {
   albumDetailQueryOptions,
-  albumFiltersQueryOptions,
   albumListQueryOptions,
   useAlbum,
-  useAlbumFilters,
   useAlbums,
   useRequestAlbum,
 } from './lib/album-queries';

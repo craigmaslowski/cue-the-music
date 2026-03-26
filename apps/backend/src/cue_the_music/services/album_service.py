@@ -75,22 +75,9 @@ class AlbumService:
                 exc_info=True,
             )
 
-    async def get_albums(
-        self,
-        decades: list[int] | None = None,
-        genres: list[str] | None = None,
-        search: str | None = None,
-    ) -> list[Album]:
-        """Retrieve albums with optional search and filter criteria."""
-        return await self._repository.get_all(
-            decades=decades,
-            genres=genres,
-            search=search,
-        )
-
-    async def get_available_filters(self) -> dict[str, list]:
-        """Return available genre and decade filter values from the collection."""
-        return await self._repository.get_filters()
+    async def get_albums(self) -> list[Album]:
+        """Retrieve all albums in the collection."""
+        return await self._repository.get_all()
 
 
 async def _get_optional_discogs_client() -> DiscogsClient | None:

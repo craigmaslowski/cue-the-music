@@ -30,17 +30,3 @@ class AlbumListResponse(BaseModel):
 
     albums: list[AlbumGetResponse]
     count: int
-
-
-class GenreCount(BaseModel):
-    """A genre tag paired with its album count."""
-
-    genre: str
-    count: int
-
-
-class AlbumFilterGetResponse(BaseModel):
-    """Response schema for available filter values (genres and decades)."""
-
-    decades: list[int]
-    genres: list[GenreCount]

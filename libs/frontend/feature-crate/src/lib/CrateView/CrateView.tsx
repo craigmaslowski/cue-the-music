@@ -1,8 +1,10 @@
 import { EmptyState } from '@cue-the-music/core-ui';
 import {
-  useAlbumFilters,
+  deriveFilterValues,
+  filterAlbums,
   useAlbums,
 } from '@cue-the-music/data-access-collection';
+import { useMemo } from 'react';
 
 import { AlbumDetailOverlay } from '../AlbumDetailOverlay';
 import { AlbumGrid } from '../AlbumGrid';
@@ -23,13 +25,25 @@ export function CrateView(props: ICrateViewProps) {
     selectedAlbumId,
   } = useCrateView(props);
 
-  const { data: albumData } = useAlbums(filters);
-  const { data: filterValues } = useAlbumFilters();
+  const { data: albumData } = useAlbums();
 
-  const albums = albumData.albums;
-  const total = albumData.count;
-  const hasNoCollection = total === 0 && !filters.search && !filters.genres && !filters.decades;
-  const hasNoResults = albums.length === 0 && !hasNoCollection;
+  // All albums from the single unfiltered cache entry
+  const allAlbums = albumData.albums;
+
+  // Client-side filtering with memoized results
+  const filteredAlbums = useMemo(
+    () => filterAlbums(allAlbums, filters),
+    [allAlbums, filters],
+  );
+
+  // Derive filter values (genres with counts, decades) from the full set — static, not reactive
+  const filterValues = useMemo(
+    () => deriveFilterValues(allAlbums),
+    [allAlbums],
+  );
+
+  const hasNoCollection = allAlbums.length === 0;
+  const hasNoResults = filteredAlbums.length === 0 && !hasNoCollection;
 
   return (
     <div className={rootStyles}>
@@ -56,8 +70,8 @@ export function CrateView(props: ICrateViewProps) {
         </div>
       )}
 
-      {albums.length > 0 && (
-        <AlbumGrid albums={albums} onAlbumPress={handleOpenOverlay} />
+      {filteredAlbums.length > 0 && (
+        <AlbumGrid albums={filteredAlbums} onAlbumPress={handleOpenOverlay} />
       )}
 
       <AlbumDetailOverlay
