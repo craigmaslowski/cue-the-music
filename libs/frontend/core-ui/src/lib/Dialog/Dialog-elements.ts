@@ -9,26 +9,39 @@ export const backdropStyles = css({
   zIndex: 50,
 });
 
-/** Close trigger button in the top-right corner */
+/** Close trigger button — floating pill in top-right corner */
 export const closeTriggerStyles = css({
-  color: 'onSurface.variant',
+  alignItems: 'center',
+  backdropFilter: 'blur(token(blurs.glass))',
+  backgroundColor: 'rgba(40, 40, 40, 0.85)',
+  borderRadius: 'full',
+  color: 'onSurface',
   cursor: 'pointer',
-  fontSize: 'bodyLg',
+  display: 'flex',
+  fontSize: 'labelMd',
+  fontWeight: 600,
+  height: '2rem',
+  justifyContent: 'center',
   position: 'absolute',
   right: '4',
   top: '4',
+  transition: 'background-color 0.15s ease',
+  width: '2rem',
+  zIndex: 2,
 });
 
-/** Main dialog panel */
+/** Main dialog panel — flex column, does not scroll */
 export const contentStyles = css({
   backgroundColor: 'surface.containerHigh',
   borderRadius: 'xl',
   boxShadow: 'ambient',
+  display: 'flex',
+  flexDirection: 'column',
   left: '50%',
   maxHeight: '85vh',
   maxWidth: '500px',
-  overflowY: 'auto',
-  padding: '6',
+  overflow: 'hidden',
+  paddingTop: '6',
   position: 'fixed',
   top: '50%',
   transform: 'translate(-50%, -50%)',
@@ -42,6 +55,7 @@ export const descriptionStyles = css({
   fontFamily: 'body',
   fontSize: 'bodyLg',
   marginTop: '2',
+  paddingInline: '6',
 });
 
 /** Centering container for the dialog */
@@ -54,6 +68,14 @@ export const positionerStyles = css({
   zIndex: 51,
 });
 
+/** Scrollable body area between header and close button */
+export const scrollBodyStyles = css({
+  flex: 1,
+  overflowY: 'auto',
+  paddingBottom: '6',
+  paddingInline: '6',
+});
+
 /** Dialog title heading */
 export const titleStyles = css({
   color: 'onSurface',
@@ -61,4 +83,5 @@ export const titleStyles = css({
   fontSize: 'headlineLg',
   fontWeight: 700,
   letterSpacing: 'tight',
+  paddingInline: '6',
 });

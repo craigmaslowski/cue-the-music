@@ -6,6 +6,7 @@ import {
   contentStyles,
   descriptionStyles,
   positionerStyles,
+  scrollBodyStyles,
   titleStyles,
 } from './Dialog-elements';
 import type { IDialogProps } from './Dialog-types';
@@ -28,7 +29,7 @@ export function Dialog(props: IDialogProps) {
                 {description}
               </ArkDialog.Description>
             )}
-            {children}
+            <div className={scrollBodyStyles}>{children}</div>
             <ArkDialog.CloseTrigger className={closeTriggerStyles}>
               ✕
             </ArkDialog.CloseTrigger>
