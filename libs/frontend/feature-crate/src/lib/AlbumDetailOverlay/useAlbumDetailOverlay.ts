@@ -3,6 +3,9 @@ import {
   useAlbum,
   useRequestAlbum,
 } from '@cue-the-music/data-access-collection';
+import type { IQueueState } from '@cue-the-music/data-access-queue';
+import { queueKeys } from '@cue-the-music/data-access-queue';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useRef, useState } from 'react';
 
@@ -25,6 +28,15 @@ export function useAlbumDetailOverlay(
   const { albumId, onClose } = props;
   const isOpen = albumId !== null;
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  // Check cached queue state to see if album is already queued or now playing
+  const queueState = queryClient.getQueryData<IQueueState>(queueKeys.all);
+  const isInQueue =
+    albumId !== null &&
+    queueState !== undefined &&
+    (queueState.queue.some((item) => item.album.id === albumId) ||
+      queueState.now_playing?.album?.id === albumId);
   const autoCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [alreadyInQueue, setAlreadyInQueue] = useState(false);
@@ -82,8 +94,8 @@ export function useAlbumDetailOverlay(
   let buttonText = 'Request This Album';
   let isRequestDisabled = false;
 
-  if (alreadyInQueue) {
-    buttonText = 'Already in queue';
+  if (isInQueue || alreadyInQueue) {
+    buttonText = 'In Queue';
     isRequestDisabled = true;
   } else if (limitReached) {
     buttonText = 'Request limit reached';
