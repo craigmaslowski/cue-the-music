@@ -1,10 +1,11 @@
 import {
   artistStyles,
+  artistLineStyles,
   buttonContentStyles,
   chipContainerStyles,
   coverArtStyles,
   genreChipStyles,
-  infoLineStyles,
+  labelStyles,
   metadataStyles,
   requestButtonStyles,
   skeletonLineStyles,
@@ -33,9 +34,6 @@ export function AlbumDetailContent(props: IAlbumDetailContentProps) {
   const { album, isTracklistLoading } = useAlbumDetailData(albumId);
 
   const allTags = [...(album.genre_tags ?? []), ...(album.style_tags ?? [])];
-  const infoSegments: string[] = [];
-  if (album.label) infoSegments.push(album.label);
-  if (album.year) infoSegments.push(String(album.year));
 
   return (
     <div>
@@ -50,13 +48,12 @@ export function AlbumDetailContent(props: IAlbumDetailContentProps) {
       )}
 
       <div className={metadataStyles}>
+        <span className={labelStyles}>{album.label}</span>
         <h3 className={titleStyles}>{album.title}</h3>
-        <span className={artistStyles}>{album.artist}</span>
-        {infoSegments.length > 0 && (
-          <span className={infoLineStyles}>
-            {infoSegments.join(' \u00B7 ')}
-          </span>
-        )}
+        <span className={artistLineStyles}>
+          <span className={artistStyles}>{album.artist}</span>
+          {['', album.year].join(' \u00B7 ')}
+        </span>
       </div>
 
       {allTags.length > 0 && (

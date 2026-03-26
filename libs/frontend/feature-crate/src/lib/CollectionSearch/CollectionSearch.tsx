@@ -3,6 +3,7 @@ import { SearchInput } from '@cue-the-music/core-ui';
 import { ChipFilter } from '../ChipFilter';
 import { GenreFilter } from '../GenreFilter';
 import {
+  albumCountFiltersToggleStyles,
   countStyles,
   filtersStyles,
   rootStyles,
@@ -38,23 +39,6 @@ export function CollectionSearch(props: ICollectionSearchProps) {
         onSearch={onSearch}
         placeholder="Search artists and albums..."
       />
-
-      {hasFilters && (
-        <button
-          className={toggleButtonStyles}
-          onClick={handleToggleFilters}
-          type="button"
-        >
-          <span
-            className="material-symbols-outlined"
-            style={{ fontSize: '1.25rem' }}
-          >
-            {isFiltersOpen ? 'filter_list_off' : 'filter_list'}
-          </span>
-          {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
-        </button>
-      )}
-
       {isFiltersOpen && (
         <div className={filtersStyles}>
           {genres.length > 0 && (
@@ -74,8 +58,24 @@ export function CollectionSearch(props: ICollectionSearchProps) {
           )}
         </div>
       )}
-
-      {totalCount > 0 && <span className={countStyles}>{countText}</span>}
+      <div className={albumCountFiltersToggleStyles}>
+        {totalCount > 0 && <span className={countStyles}>{countText}</span>}
+        {hasFilters && (
+          <button
+            className={toggleButtonStyles}
+            onClick={handleToggleFilters}
+            type="button"
+          >
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: '1.25rem' }}
+            >
+              {isFiltersOpen ? 'filter_list_off' : 'filter_list'}
+            </span>
+            {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
