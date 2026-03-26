@@ -29,7 +29,8 @@ export function CollectionSearch(props: ICollectionSearchProps) {
     useCollectionSearch(props);
 
   const hasFilters = genres.length > 0 || decades.length > 0;
-  const countText = hasActiveFilters
+  const isFiltered = filteredCount !== totalCount;
+  const countText = isFiltered
     ? `${filteredCount} of ${totalCount} albums`
     : `${totalCount} albums`;
 
