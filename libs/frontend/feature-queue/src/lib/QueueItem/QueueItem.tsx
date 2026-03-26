@@ -49,15 +49,17 @@ export function QueueItem(props: IQueueItemProps) {
           onUpVote={handleUpVote}
           upCount={item.votes.up_count}
         />
-        <button
-          aria-label="Cancel request"
-          className={cancelButtonStyles}
-          disabled={isCancelling}
-          onClick={handleCancel}
-          type="button"
-        >
-          &#x2715;
-        </button>
+        {item.is_mine && (
+          <button
+            aria-label="Cancel request"
+            className={cancelButtonStyles}
+            disabled={isCancelling}
+            onClick={handleCancel}
+            type="button"
+          >
+            &#x2715;
+          </button>
+        )}
       </div>
 
       <div className={actionsStyles}>{renderItemActions?.(item)}</div>

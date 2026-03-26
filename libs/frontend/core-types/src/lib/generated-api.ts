@@ -91,6 +91,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/host/queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Clear Queue
+         * @description Clear all queue items and now playing (host action).
+         */
+        delete: operations["clear_queue_api_host_queue_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/host/queue/{queue_item_id}": {
         parameters: {
             query?: never;
@@ -355,14 +375,16 @@ export interface components {
             /** Id */
             id: number;
             album: components["schemas"]["AlbumSummary"];
-            /** Requested By Ip */
-            requested_by_ip: string;
-            votes: components["schemas"]["VoteGetResponse"];
             /**
              * Created At
              * Format: date-time
              */
             created_at: string;
+            /** Is Mine */
+            is_mine: boolean;
+            /** Requested By Ip */
+            requested_by_ip: string;
+            votes: components["schemas"]["VoteGetResponse"];
         };
         /**
          * QueueItemPromoteRequest
@@ -546,6 +568,35 @@ export interface operations {
         };
     };
     clear_now_playing_api_host_now_playing_delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                "x-host-token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    clear_queue_api_host_queue_delete: {
         parameters: {
             query?: never;
             header?: {

@@ -39,9 +39,10 @@ class QueueItemGetResponse(BaseModel):
 
     id: int
     album: AlbumSummary
+    created_at: datetime
+    is_mine: bool
     requested_by_ip: str
     votes: VoteGetResponse
-    created_at: datetime
 
 
 class NowPlayingGetResponse(BaseModel):

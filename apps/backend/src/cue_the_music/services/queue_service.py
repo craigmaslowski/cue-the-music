@@ -90,9 +90,10 @@ class QueueService:
         response = QueueItemGetResponse(
             id=item.id,
             album=AlbumSummary.model_validate(album),
+            created_at=item.created_at,
+            is_mine=True,
             requested_by_ip=item.requested_by_ip,
             votes=VoteGetResponse(up_count=0, down_count=0, my_vote=None),
-            created_at=item.created_at,
         )
 
         await self._broadcast("queue_update", {"reason": "request_added"})
@@ -134,9 +135,10 @@ class QueueService:
                 QueueItemGetResponse(
                     id=item.id,
                     album=AlbumSummary.model_validate(item.album),
+                    created_at=item.created_at,
+                    is_mine=item.requested_by_ip == client_ip,
                     requested_by_ip=item.requested_by_ip,
                     votes=VoteGetResponse(**votes),
-                    created_at=item.created_at,
                 )
             )
 

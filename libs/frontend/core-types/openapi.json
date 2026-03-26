@@ -206,6 +206,49 @@
         }
       }
     },
+    "/api/host/queue": {
+      "delete": {
+        "tags": [
+          "host-queue"
+        ],
+        "summary": "Clear Queue",
+        "description": "Clear all queue items and now playing (host action).",
+        "operationId": "clear_queue_api_host_queue_delete",
+        "parameters": [
+          {
+            "name": "x-host-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Host-Token"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/host/queue/{queue_item_id}": {
       "delete": {
         "tags": [
@@ -822,26 +865,31 @@
           "album": {
             "$ref": "#/components/schemas/AlbumSummary"
           },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "is_mine": {
+            "type": "boolean",
+            "title": "Is Mine"
+          },
           "requested_by_ip": {
             "type": "string",
             "title": "Requested By Ip"
           },
           "votes": {
             "$ref": "#/components/schemas/VoteGetResponse"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
           }
         },
         "type": "object",
         "required": [
           "id",
           "album",
+          "created_at",
+          "is_mine",
           "requested_by_ip",
-          "votes",
-          "created_at"
+          "votes"
         ],
         "title": "QueueItemGetResponse",
         "description": "A single queue item with album info and vote state."
