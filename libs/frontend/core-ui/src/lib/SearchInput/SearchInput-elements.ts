@@ -33,7 +33,7 @@ export const clearButtonStyles = css({
   justifyContent: 'center',
   padding: '2',
   position: 'absolute',
-  right: '3',
+  right: '5',
   top: '50%',
   transform: 'translateY(-50%)',
 });
