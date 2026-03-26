@@ -87,13 +87,16 @@ class QueueService:
         # Insert (catches IntegrityError for duplicates inside the repo)
         item = await self._queue_repo.add_to_queue(album_id, ip)
 
+        # Auto-upvote: the requester obviously wants this album played
+        await self._vote_repo.upsert_vote(item.id, ip, 1)
+
         response = QueueItemGetResponse(
             id=item.id,
             album=AlbumSummary.model_validate(album),
             created_at=item.created_at,
             is_mine=True,
             requested_by_ip=item.requested_by_ip,
-            votes=VoteGetResponse(up_count=0, down_count=0, my_vote=None),
+            votes=VoteGetResponse(up_count=1, down_count=0, my_vote=1),
         )
 
         await self._broadcast("queue_update", {"reason": "request_added"})

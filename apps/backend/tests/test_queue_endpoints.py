@@ -56,7 +56,8 @@ class TestQueueEndpoints:
         assert response.status_code == 201
         data = response.json()
         assert data["album"]["id"] == album["id"]
-        assert data["votes"]["up_count"] == 0
+        assert data["votes"]["up_count"] == 1
+        assert data["votes"]["my_vote"] == 1
         assert data["votes"]["down_count"] == 0
 
     async def test_add_duplicate_album_returns_409(
