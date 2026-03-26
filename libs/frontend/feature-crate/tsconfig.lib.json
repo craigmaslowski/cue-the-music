@@ -44,10 +44,13 @@
       "path": "../core-types/tsconfig.lib.json"
     },
     {
+      "path": "../core-ui/tsconfig.lib.json"
+    },
+    {
       "path": "../data-access-collection/tsconfig.lib.json"
     },
     {
-      "path": "../core-ui/tsconfig.lib.json"
+      "path": "../data-access-queue/tsconfig.lib.json"
     }
   ]
 }
