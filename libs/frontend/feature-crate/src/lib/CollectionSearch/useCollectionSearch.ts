@@ -1,3 +1,5 @@
+import { useCallback, useState } from 'react';
+
 import type {
   ICollectionSearchProps,
   IUseCollectionSearchReturn,
@@ -8,9 +10,14 @@ export function useCollectionSearch(
   props: ICollectionSearchProps,
 ): IUseCollectionSearchReturn {
   const { selectedDecades, selectedGenres } = props;
+  const [isFiltersOpen, setIsFiltersOpen] = useState(true);
 
   const hasActiveFilters =
     selectedGenres.length > 0 || selectedDecades.length > 0;
 
-  return { hasActiveFilters };
+  const handleToggleFilters = useCallback(() => {
+    setIsFiltersOpen((prev) => !prev);
+  }, []);
+
+  return { hasActiveFilters, handleToggleFilters, isFiltersOpen };
 }

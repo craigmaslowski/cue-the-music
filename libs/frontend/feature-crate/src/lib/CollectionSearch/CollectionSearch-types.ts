@@ -24,4 +24,8 @@ export interface ICollectionSearchProps {
 export interface IUseCollectionSearchReturn {
   /** Whether any filters are active */
   hasActiveFilters: boolean;
+  /** Handler to toggle filter section visibility */
+  handleToggleFilters: () => void;
+  /** Whether the filter section is expanded */
+  isFiltersOpen: boolean;
 }

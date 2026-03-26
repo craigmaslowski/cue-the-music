@@ -17,7 +17,21 @@ export const rootStyles = css({
 export const countStyles = css({
   color: 'onSurface.variant',
   fontFamily: 'body',
+  fontSize: 'labelLg',
+  paddingInline: '3',
+});
+
+/** Toggle button to show/hide filters */
+export const toggleButtonStyles = css({
+  alignItems: 'center',
+  backgroundColor: 'transparent',
+  borderWidth: '0',
+  color: 'onSurface.variant',
+  cursor: 'pointer',
+  display: 'flex',
+  fontFamily: 'body',
   fontSize: 'labelMd',
+  gap: '1',
   paddingInline: '3',
 });
 
