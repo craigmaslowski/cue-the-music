@@ -19,6 +19,7 @@ export function ChipFilter(props: IChipFilterProps) {
       <div className={chipRowStyles}>
         {options.map((option) => (
           <button
+            aria-pressed={isSelected(option)}
             className={isSelected(option) ? chipSelectedStyles : chipStyles}
             key={option}
             onClick={() => handleToggle(option)}

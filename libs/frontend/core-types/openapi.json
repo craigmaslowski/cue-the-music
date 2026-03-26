@@ -608,7 +608,7 @@
           },
           "genres": {
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/GenreCount"
             },
             "type": "array",
             "title": "Genres"
@@ -847,6 +847,25 @@
         ],
         "title": "CollectionSyncTriggerResponse",
         "description": "Response schema for triggering a collection sync."
+      },
+      "GenreCount": {
+        "properties": {
+          "genre": {
+            "type": "string",
+            "title": "Genre"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "genre",
+          "count"
+        ],
+        "title": "GenreCount",
+        "description": "A genre tag paired with its album count."
       },
       "HTTPValidationError": {
         "properties": {

@@ -3,6 +3,7 @@ export type {
   IAlbumFilterValues,
   IAlbumFilters,
   IAlbumListResponse,
+  IGenreCount,
 } from './lib/album';
 export type {
   IAlbumSummary,

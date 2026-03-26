@@ -1,6 +1,7 @@
 import { SearchInput } from '@cue-the-music/core-ui';
 
 import { ChipFilter } from '../ChipFilter';
+import { GenreFilter } from '../GenreFilter';
 import { filtersStyles, rootStyles } from './CollectionSearch-elements';
 import type { ICollectionSearchProps } from './CollectionSearch-types';
 import { useCollectionSearch } from './useCollectionSearch';
@@ -27,11 +28,10 @@ export function CollectionSearch(props: ICollectionSearchProps) {
 
       <div className={filtersStyles}>
         {genres.length > 0 && (
-          <ChipFilter
-            label="Genre"
+          <GenreFilter
+            genres={genres}
             onSelectionChange={onGenresChange}
-            options={genres}
-            selected={selectedGenres}
+            selectedGenres={selectedGenres}
           />
         )}
         {decades.length > 0 && (

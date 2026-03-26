@@ -103,20 +103,25 @@ class AlbumRepository:
         Returns a dict with 'genres' (sorted unique genre + style tags)
         and 'decades' (sorted unique decades derived from album years).
         """
-        # Extract unique genres from genre_tags and style_tags JSON arrays
+        # Extract genres with album counts from genre_tags and style_tags
         genre_result = await self._session.execute(
             text("""
-                SELECT DISTINCT value FROM (
-                    SELECT json_each.value
+                SELECT value AS genre, COUNT(DISTINCT album_id) AS count
+                FROM (
+                    SELECT albums.id AS album_id, json_each.value
                     FROM albums, json_each(albums.genre_tags)
-                    UNION
-                    SELECT json_each.value
+                    UNION ALL
+                    SELECT albums.id AS album_id, json_each.value
                     FROM albums, json_each(albums.style_tags)
                 )
-                ORDER BY value
+                GROUP BY value
+                ORDER BY count DESC, genre ASC
             """)
         )
-        genres = [row[0] for row in genre_result.fetchall()]
+        genres = [
+            {"genre": row[0], "count": row[1]}
+            for row in genre_result.fetchall()
+        ]
 
         # Extract unique decades from album years
         decade_result = await self._session.execute(

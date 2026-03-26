@@ -258,7 +258,7 @@ export interface components {
             /** Decades */
             decades: number[];
             /** Genres */
-            genres: string[];
+            genres: components["schemas"]["GenreCount"][];
         };
         /**
          * AlbumGetResponse
@@ -335,6 +335,16 @@ export interface components {
             albums_synced: number;
             /** Status */
             status: string;
+        };
+        /**
+         * GenreCount
+         * @description A genre tag paired with its album count.
+         */
+        GenreCount: {
+            /** Genre */
+            genre: string;
+            /** Count */
+            count: number;
         };
         /** HTTPValidationError */
         HTTPValidationError: {

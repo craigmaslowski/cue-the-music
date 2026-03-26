@@ -11,6 +11,7 @@ from cue_the_music.schemas.album_schemas import (
     AlbumFilterGetResponse,
     AlbumGetResponse,
     AlbumListResponse,
+    GenreCount,
 )
 from cue_the_music.services.album_service import AlbumService, get_album_service
 
@@ -25,7 +26,7 @@ async def get_album_filters(
     filters = await service.get_available_filters()
     return AlbumFilterGetResponse(
         decades=filters["decades"],
-        genres=filters["genres"],
+        genres=[GenreCount(**g) for g in filters["genres"]],
     )
 
 

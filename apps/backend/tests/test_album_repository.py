@@ -194,11 +194,16 @@ class TestAlbumRepositoryGetFilters:
 
         filters = await repo.get_filters()
 
-        assert "Rock" in filters["genres"]
-        assert "Jazz" in filters["genres"]
-        assert "Punk" in filters["genres"]
-        # Verify sorted
-        assert filters["genres"] == sorted(filters["genres"])
+        genre_names = [g["genre"] for g in filters["genres"]]
+        assert "Rock" in genre_names
+        assert "Jazz" in genre_names
+        assert "Punk" in genre_names
+        # Each genre has a count
+        for g in filters["genres"]:
+            assert g["count"] > 0
+        # Sorted by count descending
+        counts = [g["count"] for g in filters["genres"]]
+        assert counts == sorted(counts, reverse=True)
 
     async def test_returns_unique_decades_sorted(
         self, async_session: AsyncSession

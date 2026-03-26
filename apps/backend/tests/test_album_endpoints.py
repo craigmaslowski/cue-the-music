@@ -141,8 +141,16 @@ class TestAlbumFiltersEndpoint:
 
         assert response.status_code == 200
         data = response.json()
-        assert "Jazz" in data["genres"]
-        assert "Rock" in data["genres"]
+        genre_names = [g["genre"] for g in data["genres"]]
+        assert "Jazz" in genre_names
+        assert "Rock" in genre_names
+        # Each genre should have a count
+        for g in data["genres"]:
+            assert "count" in g
+            assert g["count"] > 0
+        # Sorted by count descending
+        counts = [g["count"] for g in data["genres"]]
+        assert counts == sorted(counts, reverse=True)
         assert 1950 in data["decades"]
         assert 1970 in data["decades"]
 
