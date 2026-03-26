@@ -2,12 +2,18 @@ import { css } from '@styled-system/css';
 
 /** Root container for a single queue item */
 export const rootStyles = css({
-  alignItems: 'center',
+  // alignItems: 'center',
   backgroundColor: 'surface.containerLow',
   borderRadius: 'xl',
   display: 'flex',
+  flexDirection: 'column',
   gap: '3',
   padding: '3',
+});
+
+export const albumMetaStyles = css({
+  display: 'flex',
+  gap: '4',
 });
 
 /** Album thumbnail in the queue item */

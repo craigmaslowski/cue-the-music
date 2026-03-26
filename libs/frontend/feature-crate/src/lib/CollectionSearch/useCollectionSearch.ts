@@ -7,10 +7,10 @@ import type {
 
 /** Encapsulates CollectionSearch state derivation. */
 export function useCollectionSearch(
-  props: ICollectionSearchProps,
+  props: ICollectionSearchProps
 ): IUseCollectionSearchReturn {
   const { selectedDecades, selectedGenres } = props;
-  const [isFiltersOpen, setIsFiltersOpen] = useState(true);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const hasActiveFilters =
     selectedGenres.length > 0 || selectedDecades.length > 0;

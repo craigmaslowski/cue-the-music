@@ -2,9 +2,10 @@ import { css } from '@styled-system/css';
 
 /** Artist name below the title */
 export const artistStyles = css({
-  color: 'onSurface',
-  fontFamily: 'body',
+  color: 'onSurface.high',
+  fontFamily: 'heading',
   fontSize: 'labelLg',
+  fontWeight: '600',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
@@ -60,4 +61,5 @@ export const yearStyles = css({
   color: 'tertiary',
   fontFamily: 'body',
   fontSize: 'labelLg',
+  fontWeight: '600',
 });

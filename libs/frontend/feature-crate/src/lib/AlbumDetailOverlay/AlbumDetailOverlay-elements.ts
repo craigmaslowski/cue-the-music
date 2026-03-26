@@ -39,7 +39,7 @@ export const artistLineStyles = css({
 
 export const artistStyles = css({
   color: 'primary',
-  fontSize: 'bodyXl',
+  fontSize: 'body2Xl',
   fontWeight: '700',
 });
 
@@ -70,7 +70,7 @@ export const genreChipStyles = css({
   color: 'tertiary',
   fontFamily: 'body',
   fontSize: 'labelMd',
-  fontWeight: '600',
+  fontWeight: '700',
   paddingBlock: '1',
   paddingInline: '2.5',
   textTransform: 'uppercase',

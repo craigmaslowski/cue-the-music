@@ -53,6 +53,7 @@ export default defineConfig({
           // Text
           onSurface: {
             DEFAULT: { value: '#ffffff' },
+            high: { value: '#ababab' },
             variant: { value: '#9e9e9e' },
           },
 
@@ -71,7 +72,8 @@ export default defineConfig({
           displayLg: { value: '3.5rem' },
           headlineLg: { value: '2rem' },
           headlineMd: { value: '2rem' },
-          bodyXl: { value: '1.25rem' },
+          body2Xl: { value: '1.25rem' },
+          bodyXl: { value: '1.125rem' },
           bodyLg: { value: '1rem' },
           labelLg: { value: '0.875rem' },
           labelMd: { value: '0.75rem' },
@@ -79,6 +81,7 @@ export default defineConfig({
 
         letterSpacings: {
           tight: { value: '-0.02em' },
+          tighter: { value: '-0.05em' },
         },
 
         radii: {
@@ -96,7 +99,7 @@ export default defineConfig({
             value: '0px 0px 12px rgba(186, 0, 91, 0.4)',
           },
           neonCyan: {
-            value: '0px 0px 4px rgba(0, 244, 254, 0.6)',
+            value: '0px 0px 12px rgba(0, 244, 254, 0.8)',
           },
         },
 
