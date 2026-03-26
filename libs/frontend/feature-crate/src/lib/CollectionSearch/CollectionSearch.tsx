@@ -25,8 +25,7 @@ export function CollectionSearch(props: ICollectionSearchProps) {
     selectedGenres,
     totalCount,
   } = props;
-  const { hasActiveFilters, handleToggleFilters, isFiltersOpen } =
-    useCollectionSearch(props);
+  const { handleToggleFilters, isFiltersOpen } = useCollectionSearch(props);
 
   const hasFilters = genres.length > 0 || decades.length > 0;
   const isFiltered = filteredCount !== totalCount;

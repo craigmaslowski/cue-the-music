@@ -34,8 +34,14 @@ export function useSearchInput(props: ISearchInputProps): IUseSearchInputReturn 
     setInputValue(event.target.value);
   }
 
+  function handleClear(): void {
+    setInputValue('');
+    onSearch('');
+  }
+
   return {
     handleChange,
+    handleClear,
     inputValue,
   };
 }
