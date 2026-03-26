@@ -14,6 +14,9 @@ export type IAlbumFilterValues = components['schemas']['AlbumFilterGetResponse']
 /** Paginated album list response from the API. */
 export type IAlbumListResponse = components['schemas']['AlbumListResponse'];
 
+/** A genre tag paired with its album count. */
+export type IGenreCount = components['schemas']['GenreCount'];
+
 /** Filters applied when fetching the album collection (client-side type). */
 export interface IAlbumFilters {
   decades?: string[];
