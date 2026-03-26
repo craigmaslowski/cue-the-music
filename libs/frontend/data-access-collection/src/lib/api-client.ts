@@ -26,6 +26,11 @@ export async function apiFetch<T>(
     throw new ApiError(response.status, errorBody.detail ?? response.statusText);
   }
 
+  // 204 No Content has no body — Safari throws on response.json() for empty bodies
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
   return response.json() as Promise<T>;
 }
 
