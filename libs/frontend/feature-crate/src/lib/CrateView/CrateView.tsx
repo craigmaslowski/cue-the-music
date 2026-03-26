@@ -54,6 +54,7 @@ export function CrateView(props: ICrateViewProps) {
         onDecadesChange={handleDecadesChange}
         onGenresChange={handleGenresChange}
         onSearch={handleSearch}
+        searchValue={filters.search ?? ''}
         selectedDecades={filters.decades ?? []}
         selectedGenres={filters.genres ?? []}
         totalCount={allAlbums.length}
