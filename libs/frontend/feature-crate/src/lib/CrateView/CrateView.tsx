@@ -49,12 +49,14 @@ export function CrateView(props: ICrateViewProps) {
     <div className={rootStyles}>
       <CollectionSearch
         decades={filterValues.decades.map(String)}
+        filteredCount={filteredAlbums.length}
         genres={filterValues.genres}
         onDecadesChange={handleDecadesChange}
         onGenresChange={handleGenresChange}
         onSearch={handleSearch}
         selectedDecades={filters.decades ?? []}
         selectedGenres={filters.genres ?? []}
+        totalCount={allAlbums.length}
       />
 
       {hasNoCollection && (

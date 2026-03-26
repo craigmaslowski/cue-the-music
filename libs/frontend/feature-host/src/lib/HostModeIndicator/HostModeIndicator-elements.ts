@@ -6,7 +6,7 @@ export const rootStyles = css({
   display: 'flex',
   gap: '3',
   justifyContent: 'space-between',
-  padding: '3 4',
+  padding: '4',
 });
 
 /** Left section with status dot and label */
@@ -50,7 +50,7 @@ export const deactivateButtonStyles = css({
   cursor: 'pointer',
   fontFamily: 'body',
   fontSize: 'labelMd',
-  padding: '1 2',
+  padding: '2 3',
   textDecoration: 'underline',
   textDecorationColor: 'onSurface.variant',
   textUnderlineOffset: '2px',

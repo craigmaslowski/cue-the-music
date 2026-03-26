@@ -13,6 +13,14 @@ export const rootStyles = css({
   zIndex: 5,
 });
 
+/** Album count text below filters */
+export const countStyles = css({
+  color: 'onSurface.variant',
+  fontFamily: 'body',
+  fontSize: 'labelMd',
+  paddingInline: '3',
+});
+
 /** Filter chips section */
 export const filtersStyles = css({
   display: 'flex',
