@@ -54,11 +54,22 @@ Read and follow these standards documents. They are enforceable constraints, not
 
 - ALWAYS USE NX GENERATORS TO CREATE APPS AND LIBS
 
+### Production (`docker-compose.yml`)
+
+- **Containers:** Docker Compose (two services)
+- **Frontend serving:** nginx:alpine (static Vite build)
+- **Backend serving:** uvicorn (single worker)
+- **Database:** SQLite in named Docker volume
+- **Migrations:** Alembic (auto-run on container startup)
+
 ## Architecture Notes
 
-<!-- Key architectural decisions, folder structure, or patterns specific to this project -->
+- `DATABASE_URL` env var configures the SQLite path. Default: `sqlite+aiosqlite:///./cue_the_music.db` (no env var needed for dev).
+- `VITE_API_BASE_URL` is baked into the frontend at build time for production. In dev, the frontend falls back to `window.location.hostname:8000`.
 
 ## Commands
+
+### Development
 
 - Frontend dev: `npx nx serve @cue-the-music/frontend`
 - Backend dev: `cd apps/backend && uv run uvicorn cue_the_music.main:app --reload`
@@ -67,3 +78,19 @@ Read and follow these standards documents. They are enforceable constraints, not
 - Frontend typecheck: `npx nx typecheck @cue-the-music/frontend`
 - Frontend E2E: `npx nx e2e @cue-the-music/frontend-e2e`
 - All tests: `npx nx run-many -t test`
+
+### Production (Docker)
+
+- Start: `docker compose up -d`
+- Rebuild after code changes: `docker compose up -d --build`
+- View logs: `docker compose logs -f`
+- Stop: `docker compose down`
+- Reset database: `docker volume rm cue-the-music_db-data`
+
+### First-time production setup
+
+```bash
+cp .env.example .env
+# Edit .env — set DISCOGS_TOKEN, DISCOGS_USERNAME, HOST_PIN, VITE_API_BASE_URL
+docker compose up -d
+```
