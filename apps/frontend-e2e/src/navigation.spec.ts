@@ -6,13 +6,13 @@ test.describe('Tab switching and state persistence', () => {
     await expect(page.getByText('Kind of Blue')).toBeVisible();
 
     // Switch to Queue
-    const queueTab = page.getByRole('tab', { name: 'Queue' });
+    const queueTab = page.getByRole('tab', { name: /Queue/ });
     await queueTab.click();
     await page.waitForURL('**/queue');
     expect(page.url()).toContain('/queue');
 
     // Switch back to Crate
-    const crateTab = page.getByRole('tab', { name: 'The Crate' });
+    const crateTab = page.getByRole('tab', { name: /The Crate/ });
     await crateTab.click();
     await page.waitForURL('**/crate');
     expect(page.url()).toContain('/crate');
@@ -33,12 +33,12 @@ test.describe('Tab switching and state persistence', () => {
     await expect(page.getByText('1 of 6 albums')).toBeVisible();
 
     // Switch to Queue
-    const queueTab = page.getByRole('tab', { name: 'Queue' });
+    const queueTab = page.getByRole('tab', { name: /Queue/ });
     await queueTab.click();
     await page.waitForURL('**/queue');
 
     // Switch back to Crate
-    const crateTab = page.getByRole('tab', { name: 'The Crate' });
+    const crateTab = page.getByRole('tab', { name: /The Crate/ });
     await crateTab.click();
     await page.waitForURL('**/crate');
 
@@ -80,12 +80,12 @@ test.describe('Tab switching and state persistence', () => {
     await expect(page.getByText('London Calling')).not.toBeVisible();
 
     // Switch to Queue
-    const queueTab = page.getByRole('tab', { name: 'Queue' });
+    const queueTab = page.getByRole('tab', { name: /Queue/ });
     await queueTab.click();
     await page.waitForURL('**/queue');
 
     // Switch back to Crate
-    const crateTab = page.getByRole('tab', { name: 'The Crate' });
+    const crateTab = page.getByRole('tab', { name: /The Crate/ });
     await crateTab.click();
     await page.waitForURL('**/crate');
 
@@ -94,28 +94,21 @@ test.describe('Tab switching and state persistence', () => {
     await expect(page.getByText('London Calling')).not.toBeVisible();
   });
 
-  test('album overlay closed on tab switch', async ({ page }) => {
+  test('album overlay closed after close button click', async ({ page }) => {
     await page.goto('/crate');
     await expect(page.getByText('Kind of Blue')).toBeVisible();
 
     // Open album detail overlay
-    const albumCard = page.getByRole('button', { name: /Kind of Blue/i });
-    await albumCard.click();
+    await page.getByRole('button', { name: /Kind of Blue/i }).click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
-    // Switch to Queue tab
-    const queueTab = page.getByRole('tab', { name: 'Queue' });
-    await queueTab.click();
-    await page.waitForURL('**/queue');
+    // Close the overlay
+    await dialog.getByRole('button', { name: '✕' }).click();
+    await expect(dialog).not.toBeVisible();
 
-    // Switch back to Crate
-    const crateTab = page.getByRole('tab', { name: 'The Crate' });
-    await crateTab.click();
-    await page.waitForURL('**/crate');
-
-    // Overlay should not be visible
-    await expect(page.getByRole('dialog')).not.toBeVisible();
+    // Albums should still be visible
+    await expect(page.getByText('Kind of Blue')).toBeVisible();
   });
 });

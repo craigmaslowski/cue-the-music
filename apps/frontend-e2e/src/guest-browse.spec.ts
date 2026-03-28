@@ -100,8 +100,8 @@ test.describe('Guest collection browsing', () => {
     });
     await showFiltersButton.click();
 
-    // Click the 1970 decade chip
-    const decadeChip = page.getByRole('button', { name: '1970' });
+    // Click the 1970 decade chip (exact match to avoid album card "Paranoid Black Sabbath 1970")
+    const decadeChip = page.getByRole('button', { name: '1970', exact: true });
     await decadeChip.click();
 
     // Albums from the 1970s: London Calling (1979), Trans-Europe Express (1977), Paranoid (1970)
@@ -144,8 +144,8 @@ test.describe('Guest collection browsing', () => {
     await expect(hideFiltersButton).toBeVisible();
 
     // Genre and Decade labels should be visible
-    await expect(page.getByText('Genre')).toBeVisible();
-    await expect(page.getByText('Decade')).toBeVisible();
+    await expect(page.getByText('Genre', { exact: true })).toBeVisible();
+    await expect(page.getByText('Decade', { exact: true })).toBeVisible();
 
     // Click to hide filters again
     await hideFiltersButton.click();

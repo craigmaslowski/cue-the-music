@@ -28,6 +28,8 @@ const baseURL = process.env['BASE_URL'] || 'http://localhost:4200';
 export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
   globalTeardown: './src/global-teardown.ts',
+  // Serial execution — tests share a single backend DB and reset between each test
+  workers: 1,
   use: {
     baseURL,
     trace: 'on-first-retry',

@@ -88,12 +88,9 @@ test.describe('Album detail and request flow', () => {
 
     const requestButton = dialog.getByRole('button', { name: /Request/i });
     await requestButton.click();
-    await expect(dialog).not.toBeVisible({ timeout: 5000 });
 
-    // Navigate to queue
-    const queueTab = page.getByRole('tab', { name: 'Queue' });
-    await queueTab.click();
-    await page.waitForURL('**/queue');
+    // Overlay auto-closes and navigates to queue
+    await page.waitForURL('**/queue', { timeout: 5000 });
 
     // Album should appear in the queue
     await expect(page.getByText('Kind of Blue')).toBeVisible();
@@ -113,10 +110,16 @@ test.describe('Album detail and request flow', () => {
     const dialog = page.getByRole('dialog');
     const requestButton = dialog.getByRole('button', { name: /Request/i });
     await requestButton.click();
-    await expect(dialog).not.toBeVisible({ timeout: 5000 });
+
+    // Overlay auto-closes to queue
+    await page.waitForURL('**/queue', { timeout: 5000 });
+
+    // Navigate back to crate
+    await page.getByRole('tab', { name: /The Crate/ }).click();
+    await page.waitForURL('**/crate');
 
     // Re-open album detail
-    await albumCard.click();
+    await page.getByRole('button', { name: /Kind of Blue/i }).click();
     await expect(dialog).toBeVisible();
 
     // Button should now show "In Queue" and be disabled
@@ -136,13 +139,9 @@ test.describe('Album detail and request flow', () => {
     const dialog = page.getByRole('dialog');
     const requestButton = dialog.getByRole('button', { name: /Request/i });
     await requestButton.click();
-    await expect(dialog).not.toBeVisible({ timeout: 5000 });
 
-    // Navigate to queue
-    const queueTab = page.getByRole('tab', { name: 'Queue' });
-    await queueTab.click();
-    await page.waitForURL('**/queue');
-
+    // Overlay auto-closes to queue
+    await page.waitForURL('**/queue', { timeout: 5000 });
     await expect(page.getByText('Kind of Blue')).toBeVisible();
 
     // Cancel the request

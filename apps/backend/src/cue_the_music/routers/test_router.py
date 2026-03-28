@@ -108,7 +108,12 @@ _SEED_ALBUMS = [
 async def reset_database(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict[str, str]:
-    """Truncate all tables and seed baseline album data for E2E tests."""
+    """Truncate all tables, reset auth state, and seed baseline album data."""
+    # Reset host auth rate limiter to prevent lockout across tests
+    import cue_the_music.services.host_auth_service as auth_module
+
+    auth_module._host_auth_service = None
+
     # Delete in FK order: votes -> queue_items -> now_playing -> albums
     await session.execute(text("DELETE FROM votes"))
     await session.execute(text("DELETE FROM queue_items"))

@@ -16,12 +16,9 @@ async function requestAlbumAndGoToQueue(
 
   const requestButton = dialog.getByRole('button', { name: /Request/i });
   await requestButton.click();
-  await expect(dialog).not.toBeVisible({ timeout: 5000 });
 
-  const queueTab = page.getByRole('tab', { name: 'Queue' });
-  await queueTab.click();
-  await page.waitForURL('**/queue');
-
+  // Overlay auto-closes and navigates to queue after "Requested" feedback
+  await page.waitForURL('**/queue', { timeout: 5000 });
   await expect(page.getByText(albumName)).toBeVisible();
 }
 

@@ -84,7 +84,7 @@ test.describe('Host mode flows', () => {
     await requestAlbum(page, 'Kind of Blue');
 
     // Navigate to queue and activate host mode
-    const queueTab = page.getByRole('tab', { name: 'Queue' });
+    const queueTab = page.getByRole('tab', { name: /Queue/ });
     await queueTab.click();
     await page.waitForURL('**/queue');
 
@@ -110,7 +110,7 @@ test.describe('Host mode flows', () => {
     await requestAlbum(page, 'London Calling');
 
     // Navigate to queue and activate host mode
-    const queueTab = page.getByRole('tab', { name: 'Queue' });
+    const queueTab = page.getByRole('tab', { name: /Queue/ });
     await queueTab.click();
     await page.waitForURL('**/queue');
 
@@ -119,19 +119,19 @@ test.describe('Host mode flows', () => {
     await expect(page.getByText('Kind of Blue')).toBeVisible();
     await expect(page.getByText('London Calling')).toBeVisible();
 
-    // Remove the first item using the Remove button
-    const removeButtons = page.getByRole('button', { name: /Remove/i });
+    // Remove the first item using the host Remove button
+    const removeButtons = page.getByRole('button', { name: '✕ Remove' });
     await removeButtons.first().click();
 
-    // One album should be gone — wait for count to reflect the removal
-    await expect(page.getByText('1 album in queue')).toBeVisible();
+    // One album should be gone
+    await expect(page.getByText('1 album in queue')).toBeVisible({ timeout: 5000 });
   });
 
   test('Clear All button clears queue and now playing', async ({ page }) => {
     // Request an album and promote it
     await requestAlbum(page, 'Kind of Blue');
 
-    const queueTab = page.getByRole('tab', { name: 'Queue' });
+    const queueTab = page.getByRole('tab', { name: /Queue/ });
     await queueTab.click();
     await page.waitForURL('**/queue');
 
@@ -143,7 +143,7 @@ test.describe('Host mode flows', () => {
     await expect(page.getByText('Now Playing')).toBeVisible();
 
     // Request another album so queue is not empty
-    const crateTab = page.getByRole('tab', { name: 'The Crate' });
+    const crateTab = page.getByRole('tab', { name: /The Crate/ });
     await crateTab.click();
     await requestAlbum(page, 'Discovery');
 
