@@ -49,7 +49,6 @@ reports/
 *.sqlite-shm
 *.sqlite-wal
 
-_metadata.json
 .playwright-mcp/
 
 tmp/
