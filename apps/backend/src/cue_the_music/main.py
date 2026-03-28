@@ -97,6 +97,15 @@ def create_app() -> FastAPI:
     app.include_router(sync_router)
     app.include_router(vote_router)
 
+    # Test-only router — mounted only when TEST_MODE=true (E2E tests)
+    import os
+
+    if os.environ.get("TEST_MODE") == "true":
+        from cue_the_music.routers.test_router import router as test_router
+
+        app.include_router(test_router)
+        logger.info("TEST_MODE enabled — test reset endpoint mounted")
+
     return app
 
 
