@@ -15,6 +15,11 @@ from cue_the_music.models import Base  # noqa: F401
 # Alembic Config object for access to .ini file values
 config = context.config
 
+# Override sqlalchemy.url from Settings (reads DATABASE_URL env var / .env)
+from cue_the_music.config import get_settings  # noqa: E402
+
+config.set_main_option("sqlalchemy.url", get_settings().DATABASE_URL)
+
 # Set up Python logging from the config file
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

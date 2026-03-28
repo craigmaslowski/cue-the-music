@@ -11,9 +11,11 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-# Async engine with aiosqlite driver
+from cue_the_music.config import get_settings
+
+# Async engine with aiosqlite driver — URL from Settings (supports DATABASE_URL env var)
 engine = create_async_engine(
-    "sqlite+aiosqlite:///./cue_the_music.db",
+    get_settings().DATABASE_URL,
     connect_args={"check_same_thread": False},
     echo=False,
 )

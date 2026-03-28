@@ -10,6 +10,7 @@ out-tsc/
 node-compile-cache/
 styled-system/
 routeTree.gen.ts
+.vite/
 
 # NX
 .nx/
@@ -42,6 +43,8 @@ reports/
 
 # Database
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
 *.sqlite-shm

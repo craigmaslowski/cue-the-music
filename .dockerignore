@@ -1,0 +1,16 @@
+node_modules
+.git
+*.db
+*.db-shm
+*.db-wal
+coverage
+reports
+.vite
+dist
+.nx
+.worktrees
+__pycache__
+.pytest_cache
+.ruff_cache
+tmp
+test-output

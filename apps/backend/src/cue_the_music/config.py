@@ -25,6 +25,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    DATABASE_URL: str = "sqlite+aiosqlite:///./cue_the_music.db"
     DISCOGS_TOKEN: str
     DISCOGS_USERNAME: str
     HOST_PIN: str = "0000"
