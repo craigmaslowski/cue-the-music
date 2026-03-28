@@ -1,6 +1,7 @@
 """Alembic environment configuration for async SQLAlchemy with SQLite."""
 
 import asyncio
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import pool
@@ -14,6 +15,11 @@ from cue_the_music.models import Base  # noqa: F401
 
 # Alembic Config object for access to .ini file values
 config = context.config
+
+# Override sqlalchemy.url from DATABASE_URL env var when present (Docker)
+_database_url = os.environ.get("DATABASE_URL")
+if _database_url:
+    config.set_main_option("sqlalchemy.url", _database_url)
 
 # Set up Python logging from the config file
 if config.config_file_name is not None:

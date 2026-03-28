@@ -1,5 +1,6 @@
 """Async SQLAlchemy engine and session management for SQLite."""
 
+import os
 from collections.abc import AsyncGenerator
 from typing import Annotated
 
@@ -11,9 +12,13 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-# Async engine with aiosqlite driver
+# Async engine with aiosqlite driver — configurable via DATABASE_URL env var
+_DATABASE_URL = os.environ.get(
+    "DATABASE_URL", "sqlite+aiosqlite:///./cue_the_music.db"
+)
+
 engine = create_async_engine(
-    "sqlite+aiosqlite:///./cue_the_music.db",
+    _DATABASE_URL,
     connect_args={"check_same_thread": False},
     echo=False,
 )
