@@ -12,7 +12,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-# Async engine with aiosqlite driver — configurable via DATABASE_URL env var
+# Read DATABASE_URL at module load time (before FastAPI dependency injection).
+# Cannot use get_settings() here — it triggers lru_cache before tests can monkeypatch.
 _DATABASE_URL = os.environ.get(
     "DATABASE_URL", "sqlite+aiosqlite:///./cue_the_music.db"
 )
