@@ -1,6 +1,5 @@
 """Async SQLAlchemy engine and session management for SQLite."""
 
-import os
 from collections.abc import AsyncGenerator
 from typing import Annotated
 
@@ -12,14 +11,11 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-# Read DATABASE_URL at module load time (before FastAPI dependency injection).
-# Cannot use get_settings() here — it triggers lru_cache before tests can monkeypatch.
-_DATABASE_URL = os.environ.get(
-    "DATABASE_URL", "sqlite+aiosqlite:///./cue_the_music.db"
-)
+from cue_the_music.config import get_settings
 
+# Async engine with aiosqlite driver — URL from Settings (supports DATABASE_URL env var)
 engine = create_async_engine(
-    _DATABASE_URL,
+    get_settings().DATABASE_URL,
     connect_args={"check_same_thread": False},
     echo=False,
 )

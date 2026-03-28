@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from cue_the_music.config import get_settings
 from cue_the_music.dependencies.database import get_session
 from cue_the_music.events.broadcaster import MessageBroadcaster
 from cue_the_music.main import create_app
@@ -16,6 +17,14 @@ from cue_the_music.services.album_service import _get_optional_discogs_client
 
 # Default test PIN used by the Settings fixture
 TEST_HOST_PIN = "1234"
+
+
+@pytest.fixture(autouse=True)
+def _reset_settings_cache():
+    """Clear the Settings lru_cache so monkeypatched env vars take effect."""
+    get_settings.cache_clear()
+    yield
+    get_settings.cache_clear()
 
 
 @pytest.fixture(autouse=True)
