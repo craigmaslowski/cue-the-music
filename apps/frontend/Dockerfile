@@ -6,12 +6,10 @@ WORKDIR /app
 ARG VITE_API_BASE_URL
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
-# Install dependencies (full monorepo needed for NX + Panda CSS lib resolution)
-COPY package.json package-lock.json ./
-RUN npm ci
-
-# Copy full monorepo source
+# Copy full monorepo first — npm workspaces needs all package.json files
+# to create workspace symlinks during npm ci
 COPY . .
+RUN npm ci
 
 # Generate Panda CSS styled-system and build the frontend
 RUN npx panda codegen --cwd apps/frontend

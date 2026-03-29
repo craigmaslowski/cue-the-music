@@ -5,14 +5,17 @@ WORKDIR /app
 # Install uv for fast dependency resolution
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Install production dependencies
+# Install production dependencies (without building the project itself for layer caching)
 COPY pyproject.toml uv.lock ./
-RUN uv sync --no-dev --frozen
+RUN uv sync --no-dev --frozen --no-install-project
 
-# Copy application source, alembic config, and migrations
+# Copy application source, alembic config, migrations, and README (referenced by pyproject.toml)
 COPY src/ src/
 COPY alembic/ alembic/
-COPY alembic.ini .
+COPY alembic.ini README.md ./
+
+# Now install the project itself (source is available)
+RUN uv sync --no-dev --frozen
 
 FROM python:3.13-slim
 
