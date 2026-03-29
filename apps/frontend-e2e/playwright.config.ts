@@ -1,37 +1,58 @@
 import { defineConfig, devices } from '@playwright/test';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { workspaceRoot } from '@nx/devkit';
+import { mkdtempSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 
-// For CI, you may want to set BASE_URL to the deployed application.
+// Create temp DB path for this test run — isolated from dev/production
+const tempDir = mkdtempSync(join(tmpdir(), 'cue-e2e-'));
+const dbPath = join(tempDir, 'test.db');
+const dbUrl = `sqlite+aiosqlite:///${dbPath}`;
+
+// Write meta for global-teardown to clean up
+writeFileSync(
+  join(tmpdir(), 'cue-e2e-meta.json'),
+  JSON.stringify({ dbPath, tempDir }),
+);
+
+// Set env vars for backend webServer process
+process.env['DATABASE_URL'] = dbUrl;
+process.env['DISCOGS_TOKEN'] = 'e2e-test-token';
+process.env['DISCOGS_USERNAME'] = 'e2e-test-user';
+process.env['HOST_PIN'] = '1234';
+process.env['TEST_MODE'] = 'true';
+
 const baseURL = process.env['BASE_URL'] || 'http://localhost:4200';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
-
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  globalTeardown: './src/global-teardown.ts',
+  // Serial execution — tests share a single backend DB and reset between each test
+  workers: 1,
   use: {
     baseURL,
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
-  /* Run your local dev server before starting the tests */
-  /* Increase timeout for app startup + API dependency */
   timeout: 30_000,
-  webServer: {
-    command: 'npx nx run @cue-the-music/frontend:preview',
-    url: 'http://localhost:4200',
-    reuseExistingServer: true,
-    cwd: workspaceRoot,
-    timeout: 60_000,
-  },
+  webServer: [
+    {
+      command:
+        'cd apps/backend && uv run alembic upgrade head && uv run uvicorn cue_the_music.main:app --port 8000',
+      cwd: workspaceRoot,
+      env: { ...process.env },
+      reuseExistingServer: true,
+      timeout: 30_000,
+      url: 'http://localhost:8000/api/albums',
+    },
+    {
+      command: 'npx nx run @cue-the-music/frontend:preview',
+      cwd: workspaceRoot,
+      reuseExistingServer: true,
+      timeout: 60_000,
+      url: 'http://localhost:4200',
+    },
+  ],
   projects: [
     {
       name: 'chromium',
@@ -44,6 +65,10 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+    },
+    {
+      name: 'mobile-safari',
+      use: { ...devices['iPhone 14'] },
     },
   ],
 });

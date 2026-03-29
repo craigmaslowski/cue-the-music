@@ -72,7 +72,7 @@ Read and follow these standards documents. They are enforceable constraints, not
 ### Development
 
 - Frontend dev: `npx nx serve @cue-the-music/frontend`
-- Backend dev: `cd apps/backend && uv run uvicorn cue_the_music.main:app --reload`
+- Backend dev: `cd apps/backend && uv run uvicorn cue_the_music.main:app --reload --host 0.0.0.0`
 - Backend tests: `cd apps/backend && uv run pytest`
 - Frontend build: `npx nx build @cue-the-music/frontend`
 - Frontend typecheck: `npx nx typecheck @cue-the-music/frontend`
