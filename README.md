@@ -75,10 +75,10 @@ Start the backend and frontend in separate terminals:
 
 ```bash
 # Backend (port 8000)
-cd apps/backend && uv run uvicorn cue_the_music.main:app --reload --host 0.0.0.0
+npx nx serve backend
 
 # Frontend (port 4200)
-npx nx serve @cue-the-music/frontend
+npx nx serve frontend
 ```
 
 Open `http://localhost:4200` in your browser.
