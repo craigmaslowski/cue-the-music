@@ -6,11 +6,38 @@ No user accounts. No login. Identity is tracked by IP address only.
 
 ## Features
 
+### The Crate
+
+<div style="display: flex; gap: 1rem; height: 500px;">
+  <img src="docs/screenshots/ctm_crate.png" alt="browsing the crate"/>
+  <img src="docs/screenshots/ctm_genre_decade_filters.png" alt="filtering by genre and decade"/>
+  <img src="docs/screenshots/ctm_genre_browse.png" alt="viewing expanded genre filter dialog"/>
+  <img src="docs/screenshots/ctm_album_detail.png" alt="viewing album detail dialog"/>
+</div>
+<br />
+
 **Guests** browse the collection, search and filter by genre or decade, view album details with tracklists, and request albums to the queue. Each guest can have up to three active requests and one vote per album.
+
+### The Queue
+
+<div style="display: flex; gap: 1rem; height: 500px;">
+  <img src="docs/screenshots/ctm_queue.png" alt="viewing queue"/>
+</div>
+<br />
 
 **The Queue** is first-come-first-served. Votes don't reorder it — down-votes surface as skip signals for the host. Everything updates in real time via Server-Sent Events.
 
+### Host Mode
+
+<div style="display: flex; gap: 1rem; height: 500px;">
+  <img src="docs/screenshots/ctm_host_mode_pin_entry.png" alt="viewing host mode pin entry"/>
+  <img src="docs/screenshots/ctm_queue_host_mode.png" alt="viewing queue in host mode"/>
+</div>
+<br />
+
 **Host Mode** is activated by entering a PIN. The host can play or remove any album, clear the queue, trigger a Discogs collection sync, and see down-vote counts highlighted.
+
+### Discogs Sync
 
 **Discogs Integration** syncs the host's vinyl collection including artist, title, year (resolved from master releases), genre/style tags, cover art, and tracklists.
 
@@ -65,12 +92,12 @@ Open `http://localhost:4200` in your browser.
 
 ### Other Commands
 
-| Command | Description |
-|---------|-------------|
-| `cd apps/backend && uv run pytest` | Run backend tests |
-| `npx nx typecheck @cue-the-music/frontend` | TypeScript type checking |
-| `npx nx build @cue-the-music/frontend` | Production frontend build |
-| `npx nx run-many -t test` | Run all tests |
+| Command                                    | Description               |
+| ------------------------------------------ | ------------------------- |
+| `cd apps/backend && uv run pytest`         | Run backend tests         |
+| `npx nx typecheck @cue-the-music/frontend` | TypeScript type checking  |
+| `npx nx build @cue-the-music/frontend`     | Production frontend build |
+| `npx nx run-many -t test`                  | Run all tests             |
 
 ## Production (Docker)
 
@@ -86,13 +113,13 @@ docker compose up -d
 
 Guests connect to `http://<your-server-lan-ip>:8080`.
 
-| Command | Description |
-|---------|-------------|
-| `docker compose up -d` | Start |
-| `docker compose up -d --build` | Rebuild after code changes |
-| `docker compose logs -f` | View logs |
-| `docker compose down` | Stop |
-| `docker volume rm cue-the-music_db-data` | Reset database |
+| Command                                  | Description                |
+| ---------------------------------------- | -------------------------- |
+| `docker compose up -d`                   | Start                      |
+| `docker compose up -d --build`           | Rebuild after code changes |
+| `docker compose logs -f`                 | View logs                  |
+| `docker compose down`                    | Stop                       |
+| `docker volume rm cue-the-music_db-data` | Reset database             |
 
 ## Tech Stack
 
