@@ -9,8 +9,8 @@ No user accounts. No login. Identity is tracked by IP address only.
 ### The Crate
 <div>
   <img src="docs/screenshots/ctm_crate.png" alt="browsing the crate" height="500" />
-  <img src="docs/screenshots/ctm_genre_decade_filters.png" alt="filtering by genre and decade" height="500" />
   <img src="docs/screenshots/ctm_genre_browse.png" alt="viewing expanded genre filter dialog" height="500" />
+  <img src="docs/screenshots/ctm_genre_decade_filters.png" alt="filtering by genre and decade" height="500" />
   <img src="docs/screenshots/ctm_album_detail.png" alt="viewing album detail dialog" height="500" />
 </div>
 
