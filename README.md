@@ -14,7 +14,7 @@ No user accounts. No login. Identity is tracked by IP address only.
   <img src="docs/screenshots/ctm_album_detail.png" alt="viewing album detail dialog" height="500" />
 </div>
 
-**Guests** browse the collection, search and filter by genre or decade, view album details with tracklists, and request albums to the queue. Each guest can have up to three active requests and one vote per album.
+**Guests** browse the collection, search by artist and album name, filter by genre and decade, view album details with tracklists, and request albums to the queue. Each guest can have up to three active requests and one vote per album.
 
 ### The Queue
 
