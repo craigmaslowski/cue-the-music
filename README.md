@@ -8,24 +8,24 @@ No user accounts. No login. Identity is tracked by IP address only.
 
 ### The Crate
 <div>
-  <img src="docs/screenshots/ctm_crate.png" alt="browsing the crate" height="500" />
-  <img src="docs/screenshots/ctm_genre_browse.png" alt="viewing expanded genre filter dialog" height="500" />
-  <img src="docs/screenshots/ctm_genre_decade_filters.png" alt="filtering by genre and decade" height="500" />
-  <img src="docs/screenshots/ctm_album_detail.png" alt="viewing album detail dialog" height="500" />
+  <img src="docs/screenshots/ctm_crate.png" alt="browsing the crate" height="400" />
+  <img src="docs/screenshots/ctm_genre_browse.png" alt="viewing expanded genre filter dialog" height="400" />
+  <img src="docs/screenshots/ctm_genre_decade_filters.png" alt="filtering by genre and decade" height="400" />
+  <img src="docs/screenshots/ctm_album_detail.png" alt="viewing album detail dialog" height="400" />
 </div>
 
 **Guests** browse the collection, search by artist and album name, filter by genre and decade, view album details with tracklists, and request albums to the queue. Each guest can have up to three active requests and one vote per album.
 
 ### The Queue
 
-<img src="docs/screenshots/ctm_queue.png" alt="viewing queue" height="500" />
+<img src="docs/screenshots/ctm_queue.png" alt="viewing queue" height="400" />
 
 **The Queue** is first-come-first-served. Votes don't reorder it — down-votes surface as skip signals for the host. Everything updates in real time via Server-Sent Events.
 
 ### Host Mode
 <div>
-  <img src="docs/screenshots/ctm_host_mode_pin_entry.png" alt="viewing host mode pin entry" height="500" />
-  <img src="docs/screenshots/ctm_queue_host_mode.png" alt="viewing queue in host mode" height="500" />
+  <img src="docs/screenshots/ctm_host_mode_pin_entry.png" alt="viewing host mode pin entry" height="400" />
+  <img src="docs/screenshots/ctm_queue_host_mode.png" alt="viewing queue in host mode" height="400" />
 </div>
 
 **Host Mode** is activated by entering a PIN. The host can play or remove any album, clear the queue, trigger a Discogs collection sync, and see down-vote counts highlighted.
